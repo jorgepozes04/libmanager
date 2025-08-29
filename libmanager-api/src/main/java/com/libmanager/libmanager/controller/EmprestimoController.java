@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController // 1. Combina @Controller e @ResponseBody, preparando a classe para lidar com requisições REST
-@RequestMapping("/api/emprestimos") // 2. Define o prefixo da URL para todos os métodos neste controller
+@CrossOrigin(origins = "*") // Permite requisições de qualquer origem
+@RestController
+@RequestMapping("/api/emprestimos")
 public class EmprestimoController {
 
     private final EmprestimoService emprestimoService;
