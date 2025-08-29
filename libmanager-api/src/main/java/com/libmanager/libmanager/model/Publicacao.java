@@ -6,13 +6,13 @@ import lombok.Data;
 
 @Entity
 @Table(name = "publicacoes")
-@Inheritance(strategy = InheritanceType.JOINED) // Mesma estratégia de herança de Membro
+@Inheritance(strategy = InheritanceType.JOINED)
 @Data
 public abstract class Publicacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Usando Integer para manter a consistência
+    private Long id;
 
     private String titulo;
 

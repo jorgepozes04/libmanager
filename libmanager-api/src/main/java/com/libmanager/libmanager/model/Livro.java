@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "livros")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@PrimaryKeyJoinColumn(name = "publicacao_id") // Define a coluna de junção da herança
+@PrimaryKeyJoinColumn(name = "publicacao_id")
 public class Livro extends Publicacao {
 
     private String autor;
