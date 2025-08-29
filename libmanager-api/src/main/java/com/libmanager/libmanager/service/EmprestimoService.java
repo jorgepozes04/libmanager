@@ -18,8 +18,7 @@ import java.util.Optional;
 
 @Service
 public class EmprestimoService {
-
-    // 2. Injeção de Dependência: O Spring vai fornecer uma instância de cada repositório
+    
     private final EmprestimoRepository emprestimoRepository;
     private final ClienteRepository clienteRepository;
     private final LivroRepository livroRepository;
@@ -36,7 +35,7 @@ public class EmprestimoService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    @Transactional // 1. Garante que a operação seja atômica (ou tudo funciona, ou nada é salvo)
+    @Transactional // Garante que a operação seja atômica (ou tudo funciona, ou nada é salvo)
     public Emprestimo realizarEmprestimo(EmprestimoRequestDTO request) {
 
         Cliente cliente = clienteRepository.findById(request.getIdCliente())
@@ -48,7 +47,7 @@ public class EmprestimoService {
         Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
 
-        // 3. Aplica as regras de negócio e pré-condições
+        // Aplica as regras de negócio e pré-condições
         if (cliente.getStatus() != com.libmanager.libmanager.enums.StatusMembro.ATIVO) {
             throw new RuntimeException("Cliente não está ativo!");
         }
@@ -69,11 +68,11 @@ public class EmprestimoService {
         }
 
 
-        // 4. Atualiza o estado das entidades
+        // Atualiza o estado das entidades
         livro.setQuantDisponivel(livro.getQuantDisponivel() - 1);
         cliente.setLivroEmprestado(true);
 
-        // 5. Cria a nova entidade Emprestimo
+        // Cria a nova entidade Emprestimo
         Emprestimo novoEmprestimo = new Emprestimo();
         novoEmprestimo.setCliente(cliente);
         novoEmprestimo.setLivro(livro);
@@ -82,7 +81,7 @@ public class EmprestimoService {
         novoEmprestimo.setDataDevolucaoPrevista(LocalDate.now().plusDays(7)); // Prazo de 7 dias
         novoEmprestimo.setStatus(StatusEmprestimo.ATIVO);
 
-        // 6. Salva o novo empréstimo no banco. A transação também salva as alterações em Livro e Cliente.
+        // Salva o novo empréstimo no banco. A transação também salva as alterações em Livro e Cliente.
         return emprestimoRepository.save(novoEmprestimo);
     }
 }

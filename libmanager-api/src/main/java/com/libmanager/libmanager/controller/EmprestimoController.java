@@ -28,7 +28,7 @@ public class EmprestimoController {
             return ResponseEntity.status(201).body(novoEmprestimo);
         } catch (RuntimeException e) {
             // 6. Em caso de erro (ex: cliente inativo), retorna uma resposta HTTP 400 Bad Request com a mensagem de erro
-            return ResponseEntity.badRequest().body(null); // Em um projeto real, retornaríamos um objeto de erro mais detalhado
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }
