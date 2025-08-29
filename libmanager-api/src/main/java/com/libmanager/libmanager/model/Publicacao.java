@@ -1,0 +1,26 @@
+package com.libmanager.libmanager.model;
+
+import com.libmanager.libmanager.enums.TipoPublicacao;
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Table(name = "publicacoes")
+@Inheritance(strategy = InheritanceType.JOINED) // Mesma estratégia de herança de Membro
+@Data
+public abstract class Publicacao {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // Usando Integer para manter a consistência
+
+    private String titulo;
+
+    @Column(name = "quant_disponivel")
+    private int quantDisponivel;
+
+    // Coluna usada pelo Hibernate para saber se a publicação é um LIVRO ou REVISTA
+    @Column(name = "tipo_publicacao", insertable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
+    private TipoPublicacao tipoPublicacao;
+}

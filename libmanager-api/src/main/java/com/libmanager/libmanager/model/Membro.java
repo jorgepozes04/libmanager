@@ -1,0 +1,26 @@
+package com.libmanager.libmanager.model;
+
+import com.libmanager.libmanager.enums.StatusMembro;
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name = "membros")
+@Inheritance(strategy = InheritanceType.JOINED)
+
+public abstract class Membro {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nome;
+    private String cpf;
+
+    @Enumerated(EnumType.STRING)
+    private StatusMembro status;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id")
+    private Endereco endereco;
+}
