@@ -10,5 +10,5 @@ import java.util.List;
 public interface RevistaRepository extends JpaRepository<Revista, Long> {
     List<Revista> findByTituloContainingIgnoreCase(String titulo);
 
-    List<Revista> findByEditoraContainingIgnoreCase(String autor);
+    List<Revista> findByEditoraContainingIgnoreCase(String editora);
 }
