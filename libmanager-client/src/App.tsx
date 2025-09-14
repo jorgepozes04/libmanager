@@ -1,73 +1,41 @@
-import React, { useState } from 'react';
-import { realizarEmprestimo } from './services/apiService';
-import './App.css'; // Estilos básicos
+import { useState } from 'react';
+import './App.css';
+
+// Importe os componentes que você criou
+import Login from './components/Login';
+//import CadastroCliente from './components/CadastroCliente';
+import RealizarEmprestimo from './components/RealizarEmprestimo';
+
+// Define os tipos de telas que podemos ter
+type View = 'login' | 'cadastroCliente' | 'emprestimo';
 
 function App() {
-    // Estados para armazenar os valores dos inputs e as mensagens
-    const [livroId, setLivroId] = useState('');
-    const [clienteId, setClienteId] = useState('');
-    const [usuarioId, setUsuarioId] = useState('');
-    const [mensagem, setMensagem] = useState('');
-    const [isError, setIsError] = useState(false);
+    // Estado para controlar qual tela está visível. Começamos com a de login.
+    const [currentView, setCurrentView] = useState<View>('login');
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault(); // Impede o recarregamento da página
-        setMensagem(''); // Limpa a mensagem anterior
-
-        const emprestimoData = {
-            idLivro: Number(livroId),
-            idCliente: Number(clienteId),
-            idUsuario: Number(usuarioId),
-        };
-
-        try {
-            const resultado = await realizarEmprestimo(emprestimoData);
-            setIsError(false);
-            setMensagem(`Empréstimo realizado com sucesso! ID: ${resultado.id}`);
-        } catch (error) {
-            setIsError(true);
-            setMensagem('Falha ao realizar empréstimo. Verifique os dados e tente novamente.');
+    const renderView = () => {
+        switch (currentView) {
+            case 'login':
+                return <Login />;
+            case 'cadastroCliente':
+                return <CadastroCliente />;
+            case 'emprestimo':
+                return <RealizarEmprestimo />;
+            default:
+                return <Login />;
         }
     };
 
     return (
-        <div className="card">
-            <h1>LibManager - Realizar Empréstimo</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="input-group">
-                    <label>ID do Livro</label>
-                    <input
-                        type="number"
-                        value={livroId}
-                        onChange={(e) => setLivroId(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="input-group">
-                    <label>ID do Cliente</label>
-                    <input
-                        type="number"
-                        value={clienteId}
-                        onChange={(e) => setClienteId(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="input-group">
-                    <label>ID do Usuário</label>
-                    <input
-                        type="number"
-                        value={usuarioId}
-                        onChange={(e) => setUsuarioId(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Confirmar Empréstimo</button>
-            </form>
-            {mensagem && (
-                <p className={isError ? 'mensagem-erro' : 'mensagem-sucesso'}>
-                    {mensagem}
-                </p>
-            )}
+        <div>
+            <nav className="navbar">
+                <button onClick={() => setCurrentView('login')}>Login</button>
+                <button onClick={() => setCurrentView('cadastroCliente')}>Cadastrar Cliente</button>
+                <button onClick={() => setCurrentView('emprestimo')}>Realizar Empréstimo</button>
+            </nav>
+            <main>
+                {renderView()}
+            </main>
         </div>
     );
 }
