@@ -18,8 +18,6 @@ interface LoginRequest {
     password?: string;
 }
 
-// --- Funções da API ---
-
 // Função para realizar o empréstimo
 export const realizarEmprestimo = async (data: EmprestimoRequest) => {
     try {
@@ -30,9 +28,6 @@ export const realizarEmprestimo = async (data: EmprestimoRequest) => {
     }
 };
 
-// ==========================================================
-// ADICIONAR ESTA NOVA FUNÇÃO
-// ==========================================================
 export const login = async (data: LoginRequest) => {
     try {
         // Envia a requisição POST para o endpoint de autenticação
@@ -48,4 +43,21 @@ export const login = async (data: LoginRequest) => {
         throw new Error('Falha na comunicação com o servidor.');
     }
 };
-// ==========================================================
+
+export const searchClientes = async (nome: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/consultas/clientes`, { params: { nome } });
+        return response.data;
+    } catch (error) {
+        throw new Error('Falha ao buscar clientes.');
+    }
+};
+
+export const searchLivros = async (titulo: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/consultas/livros`, { params: { titulo } });
+        return response.data;
+    } catch (error) {
+        throw new Error('Falha ao buscar livros.');
+    }
+};

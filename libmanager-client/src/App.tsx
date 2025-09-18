@@ -1,43 +1,82 @@
 import { useState } from 'react';
 import './App.css';
-
-// Importe os componentes que você criou e que existem
 import Login from './components/Login';
+import Dashboard from './components/pages/Dashboard';
 import RealizarEmprestimo from './components/RealizarEmprestimo';
+import RealizarDevolucao from './components/pages/RealizarDevolucao';
+import CadastroCliente from './components/pages/CadastroCliente';
+import CadastroLivro from './components/pages/CadastroLivro';
+import CadastroRevista from './components/pages/CadastroRevista';
+import Consultas from './components/pages/Consultas';
+// Importe o novo componente de gerenciamento
+import GerenciarUsuarios from './components/pages/GerenciarUsuarios';
 
-// Define os tipos de telas que podemos ter (removido 'cadastroCliente')
-type View = 'login' | 'emprestimo';
+// Definir a interface para o objeto do usuário
+interface User {
+    id: number;
+    nomeUsuario: string;
+    cargo: string;
+}
 
 function App() {
-    // Estado para controlar qual tela está visível. Começamos com a de login.
-    const [currentView, setCurrentView] = useState<View>('login');
+    // ESTADOS CORRIGIDOS
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [currentView, setCurrentView] = useState('login'); // Começar no login
 
+    // Função para lidar com o sucesso do login
+    const handleLoginSuccess = (userData: User) => {
+        setIsAuthenticated(true);
+        setCurrentUser(userData);
+        setCurrentView('dashboard');
+    };
+
+    // Função para navegar entre as telas do dashboard
+    const handleNavigation = (view: string) => {
+        setCurrentView(view);
+    };
+
+    // Renderiza a tela correta com base na view atual
     const renderView = () => {
         switch (currentView) {
-            case 'login':
-                return <Login />;
+            case 'dashboard':
+                // Passar o cargo do usuário para o Dashboard
+                return <Dashboard onNavigate={handleNavigation} userCargo={currentUser!.cargo} />;
             case 'emprestimo':
-                return <RealizarEmprestimo />;
+                return <RealizarEmprestimo usuarioId={currentUser!.id} />;
+            case 'devolucao':
+                return <RealizarDevolucao />;
+            case 'cadastroCliente':
+                return <CadastroCliente />;
+            case 'cadastroLivro':
+                return <CadastroLivro />;
+            case 'cadastroRevista':
+                return <CadastroRevista />;
+            case 'consultas':
+                return <Consultas />;
+            case 'gerenciarUsuarios': // Adicionar o novo caso
+                return <GerenciarUsuarios />;
             default:
-                // Garante que a tela de login seja sempre o padrão
-                return <Login />;
+                return <Dashboard onNavigate={handleNavigation} userCargo={currentUser!.cargo} />;
         }
     };
 
     return (
         <div>
-            {/* A barra de navegação pode ser útil para desenvolvimento,
-              mas para o fluxo final, o usuário provavelmente navegaria após o login.
-              Você pode descomentar se quiser facilitar a troca de telas.
-            */}
-            {/* <nav className="navbar">
-                <button onClick={() => setCurrentView('login')}>Login</button>
-                <button onClick={() => setCurrentView('emprestimo')}>Realizar Empréstimo</button>
-            </nav> */}
-
-            <main>
-                {renderView()}
-            </main>
+            {!isAuthenticated ? (
+                <Login onLoginSuccess={handleLoginSuccess} />
+            ) : (
+                <main>
+                    {currentView !== 'dashboard' && (
+                        <nav className="navbar">
+                            <button onClick={() => setCurrentView('dashboard')}>
+                                ← Voltar ao Painel
+                            </button>
+                        </nav>
+                    )}
+                    {renderView()}
+                </main>
+            )}
         </div>
     );
 }

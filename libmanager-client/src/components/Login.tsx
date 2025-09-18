@@ -4,7 +4,13 @@ import './Login.css';
 // Você pode substituir 'logo-livro.jpeg' por um novo ícone de livro aberto se desejar
 import logo from '../assets/logo-livro.jpeg';
 
-const Login = () => {
+// 1. Definir a interface de propriedades
+interface LoginProps {
+    onLoginSuccess: (userData: User) => void;
+}
+
+// 2. Usar a prop no componente
+const Login = ({ onLoginSuccess }: LoginProps) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -15,7 +21,14 @@ const Login = () => {
 
         try {
             const response = await login({ username, password });
-            alert(`Bem-vindo, ${response.nomeUsuario}!`);
+
+            // Agora passamos o objeto completo, incluindo o cargo
+            onLoginSuccess({
+                id: response.id,
+                nomeUsuario: response.nomeUsuario,
+                cargo: response.cargo
+            });
+
         } catch (err: any) {
             setError(err.message || 'Usuário ou senha inválidos.');
         }

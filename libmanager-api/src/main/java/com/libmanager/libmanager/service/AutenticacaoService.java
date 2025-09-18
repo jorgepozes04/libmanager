@@ -21,9 +21,17 @@ public class AutenticacaoService {
                 .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos."));
 
         if (passwordEncoder.matches(loginRequest.getPassword(), usuario.getSenha())) {
-            return new LoginResponseDTO("Login bem-sucedido!", usuario.getNome());
+            // Incluir o ID e o CARGO do usuário na resposta
+            return new LoginResponseDTO(
+                    "Login bem-sucedido!",
+                    usuario.getNome(),
+                    usuario.getId(),
+                    usuario.getCargo().name() // Converte o Enum para String (ex: "ADMIN")
+            );
         }
 
         throw new RuntimeException("Usuário ou senha inválidos.");
     }
+
+
 }

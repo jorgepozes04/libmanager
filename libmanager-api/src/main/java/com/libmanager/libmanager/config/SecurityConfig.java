@@ -1,5 +1,6 @@
 package com.libmanager.libmanager.config;
 
+import com.libmanager.libmanager.enums.Cargo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,12 +18,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Desabilita CSRF para APIs REST
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // API sem estado
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/login").permitAll() // Permite acesso ao login
-                        .requestMatchers("/api/cadastros/**").permitAll() // Permite acesso aos cadastros
-                        .anyRequest().authenticated() // Exige autenticação para o resto
+                        .requestMatchers("/api/auth/login").permitAll()
+                        // Protegendo o endpoint de admin
+                        .requestMatchers("/api/admin/**").hasAuthority(Cargo.ADMIN.name())
+                        // Manter outros endpoints que precisam de autenticação
+                        .anyRequest().authenticated()
                 );
         return http.build();
     }

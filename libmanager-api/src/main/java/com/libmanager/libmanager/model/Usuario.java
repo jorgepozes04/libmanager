@@ -1,9 +1,7 @@
 package com.libmanager.libmanager.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import com.libmanager.libmanager.enums.Cargo;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,4 +17,7 @@ public class Usuario extends Membro {
 
     @Column(name = "senha")
     private String senha;
+
+    @Enumerated(EnumType.STRING) // Adicionar
+    private Cargo cargo;
 }
