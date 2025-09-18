@@ -7,25 +7,21 @@ import com.libmanager.libmanager.dto.UsuarioDTO;
 import com.libmanager.libmanager.enums.StatusMembro;
 import com.libmanager.libmanager.model.*;
 import com.libmanager.libmanager.repository.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 @Service
+@AllArgsConstructor
 public class CadastroService {
 
     private final ClienteRepository clienteRepository;
     private final UsuarioRepository usuarioRepository;
     private final LivroRepository livroRepository;
     private final RevistaRepository revistaRepository;
-
-    @Autowired
-    public CadastroService(ClienteRepository clienteRepository, UsuarioRepository usuarioRepository, LivroRepository livroRepository, RevistaRepository revistaRepository) {
-        this.clienteRepository = clienteRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.livroRepository = livroRepository;
-        this.revistaRepository = revistaRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Cliente cadastrarCliente(ClienteDTO clienteDTO) {
@@ -71,6 +67,7 @@ public class CadastroService {
         novoUsuario.setNome(usuarioDTO.getNome());
         novoUsuario.setCpf(usuarioDTO.getCpf());
         novoUsuario.setNomeUsuario(usuarioDTO.getNomeUsuario());
+        novoUsuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         novoUsuario.setStatus(StatusMembro.ATIVO);
         novoUsuario.setEndereco(endereco);
 

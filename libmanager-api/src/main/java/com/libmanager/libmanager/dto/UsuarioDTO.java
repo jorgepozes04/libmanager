@@ -9,5 +9,6 @@ public class UsuarioDTO {
     private String nome;
     private String cpf;
     private String nomeUsuario;
+    private String senha;
     private EnderecoDTO endereco;
 }

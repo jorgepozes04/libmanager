@@ -16,4 +16,7 @@ public class Usuario extends Membro {
 
     @Column(name = "nome_usuario")
     private String nomeUsuario;
+
+    @Column(name = "senha")
+    private String senha;
 }

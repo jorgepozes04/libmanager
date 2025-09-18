@@ -3,21 +3,49 @@ import axios from 'axios';
 // Define a URL base da nossa API Spring Boot
 const API_URL = 'http://localhost:8080/api';
 
-// Define a "forma" dos dados que vamos enviar
+// --- Interfaces ---
+
+// Para realizar empréstimo
 interface EmprestimoRequest {
     idLivro: number;
     idCliente: number;
     idUsuario: number;
 }
 
+// Para realizar login
+interface LoginRequest {
+    username?: string;
+    password?: string;
+}
+
+// --- Funções da API ---
+
 // Função para realizar o empréstimo
 export const realizarEmprestimo = async (data: EmprestimoRequest) => {
     try {
-        // Envia a requisição POST para o endpoint de empréstimos
         const response = await axios.post(`${API_URL}/emprestimos`, data);
-        return response.data; // Retorna os dados do empréstimo criado
+        return response.data;
     } catch (error) {
-        // Se der erro, lança a exceção para ser tratada na UI
         throw error;
     }
 };
+
+// ==========================================================
+// ADICIONAR ESTA NOVA FUNÇÃO
+// ==========================================================
+export const login = async (data: LoginRequest) => {
+    try {
+        // Envia a requisição POST para o endpoint de autenticação
+        const response = await axios.post(`${API_URL}/auth/login`, data);
+        return response.data; // Retorna os dados da resposta (ex: { mensagem, nomeUsuario })
+    } catch (error) {
+        // Lança o erro para ser tratado no componente de Login
+        if (axios.isAxiosError(error) && error.response) {
+            // Se o backend retornou uma mensagem de erro (ex: "Usuário ou senha inválidos.")
+            throw new Error(error.response.data || 'Erro desconhecido no login.');
+        }
+        // Se foi um erro de rede ou outro problema
+        throw new Error('Falha na comunicação com o servidor.');
+    }
+};
+// ==========================================================

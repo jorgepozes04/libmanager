@@ -2,74 +2,80 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #f0f2f5;
-    font-family: system-ui, sans-serif;
+    min-height: 100vh;
+    background-color: var(--cor-fundo);
+    position: relative;
+    overflow: hidden;
 }
 
 .login-card {
-    background: white;
-    padding: 2rem 3rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 100%;
     max-width: 380px;
+    padding: 2rem;
 }
 
 .login-logo {
-    width: 60px;
+    width: 80px; /* Aumentei um pouco o tamanho */
+    height: auto;
     margin-bottom: 1rem;
 }
 
 .login-title {
-    margin: 0;
+    margin: 0 0 2rem 0;
     font-size: 2.5rem;
-    font-weight: 300;
-    color: #333;
+    font-weight: 600;
 }
 
-.input-container {
-    margin-top: 1.5rem;
-}
-
-.input-container input {
-    width: 100%;
-    padding: 14px 20px;
-    border-radius: 30px;
-    border: 1px solid #ddd;
-    font-size: 1rem;
-    box-sizing: border-box; /* Para o padding não aumentar o tamanho */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; /* Espaçamento entre os inputs */
 }
 
 .forgot-password {
-    display: block;
-    margin-top: 0.75rem;
-    font-size: 0.8rem;
-    color: #777;
+    font-size: 0.9rem;
+    color: var(--cor-placeholder);
     text-decoration: none;
+    margin-top: -10px; /* Puxa para mais perto da senha */
+    transition: color 0.2s;
+}
+
+.forgot-password:hover {
+    color: var(--cor-primaria);
 }
 
 .login-button {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 30px;
-    background-color: #c4661f;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.login-button:hover {
-    background-color: #a5561a;
 }
 
 .error-message {
-    color: red;
+    color: #d93025;
     font-size: 0.9rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Estilo para o marcador de página no canto superior direito */
+.bookmark-icon {
+    position: absolute;
+    top: 0;
+    right: 50px;
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-top: 40px solid var(--cor-texto);
+}
+
+.bookmark-icon::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: -30px;
+    width: 0;
+    height: 0;
+    border-left: 30px solid var(--cor-texto);
+    border-right: 30px solid var(--cor-texto);
+    border-bottom: 30px solid transparent;
 }

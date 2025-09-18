@@ -19,10 +19,10 @@ public class ConsultaService {
     private final RevistaRepository revistaRepository;
 
     public List<Livro> consultarLivros(String titulo, String autor) {
-        if (titulo == null && !titulo.isEmpty()) {
+        if (titulo != null && !titulo.isEmpty()) {
             return livroRepository.findByTituloContainingIgnoreCase(titulo);
         }
-        if (autor == null && !autor.isEmpty()) {
+        if (autor != null && !autor.isEmpty()) {
             return livroRepository.findByAutorContainingIgnoreCase(autor);
         }
         return livroRepository.findAll();

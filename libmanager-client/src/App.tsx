@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import './App.css';
 
-// Importe os componentes que você criou
+// Importe os componentes que você criou e que existem
 import Login from './components/Login';
-//import CadastroCliente from './components/CadastroCliente';
 import RealizarEmprestimo from './components/RealizarEmprestimo';
 
-// Define os tipos de telas que podemos ter
-type View = 'login' | 'cadastroCliente' | 'emprestimo';
+// Define os tipos de telas que podemos ter (removido 'cadastroCliente')
+type View = 'login' | 'emprestimo';
 
 function App() {
     // Estado para controlar qual tela está visível. Começamos com a de login.
@@ -17,22 +16,25 @@ function App() {
         switch (currentView) {
             case 'login':
                 return <Login />;
-            case 'cadastroCliente':
-                return <CadastroCliente />;
             case 'emprestimo':
                 return <RealizarEmprestimo />;
             default:
+                // Garante que a tela de login seja sempre o padrão
                 return <Login />;
         }
     };
 
     return (
         <div>
-            <nav className="navbar">
+            {/* A barra de navegação pode ser útil para desenvolvimento,
+              mas para o fluxo final, o usuário provavelmente navegaria após o login.
+              Você pode descomentar se quiser facilitar a troca de telas.
+            */}
+            {/* <nav className="navbar">
                 <button onClick={() => setCurrentView('login')}>Login</button>
-                <button onClick={() => setCurrentView('cadastroCliente')}>Cadastrar Cliente</button>
                 <button onClick={() => setCurrentView('emprestimo')}>Realizar Empréstimo</button>
-            </nav>
+            </nav> */}
+
             <main>
                 {renderView()}
             </main>

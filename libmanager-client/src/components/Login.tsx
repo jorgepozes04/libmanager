@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import './Login.css'; // Nosso novo arquivo de estilos
-// O logo pode ser um arquivo .svg ou .png que você coloca na pasta `src/assets`
+import { login } from '../services/apiService';
+import './Login.css';
+// Você pode substituir 'logo-livro.jpeg' por um novo ícone de livro aberto se desejar
 import logo from '../assets/logo-livro.jpeg';
 
 const Login = () => {
@@ -8,29 +9,27 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        setError(''); // Limpa erros anteriores
+        setError('');
 
-        // Aqui virá a chamada para o apiService
-        console.log('Tentando logar com:', { username, password });
-        // Exemplo:
-        // try {
-        //   const response = await apiService.login({ username, password });
-        //   alert(`Bem-vindo, ${response.nomeUsuario}!`);
-        // } catch (err) {
-        //   setError('Usuário ou senha inválidos.');
-        // }
+        try {
+            const response = await login({ username, password });
+            alert(`Bem-vindo, ${response.nomeUsuario}!`);
+        } catch (err: any) {
+            setError(err.message || 'Usuário ou senha inválidos.');
+        }
     };
 
     return (
         <div className="login-container">
+            <div className="bookmark-icon"></div> {/* Elemento para o marcador de página */}
             <div className="login-card">
                 <img src={logo} className="login-logo" alt="LibManager Logo" />
                 <h1 className="login-title">LibManager</h1>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="input-container">
+                <form onSubmit={handleSubmit} className="login-form">
+                    <div className="input-group">
                         <input
                             type="text"
                             placeholder="Username"
@@ -39,7 +38,7 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <div className="input-container">
+                    <div className="input-group">
                         <input
                             type="password"
                             placeholder="Password"
