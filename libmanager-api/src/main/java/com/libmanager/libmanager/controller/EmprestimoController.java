@@ -1,5 +1,6 @@
 package com.libmanager.libmanager.controller;
 
+import com.libmanager.libmanager.dto.DevolucaoResponseDTO;
 import com.libmanager.libmanager.dto.EmprestimoRequestDTO;
 import com.libmanager.libmanager.model.Emprestimo;
 import com.libmanager.libmanager.service.EmprestimoService;
@@ -29,6 +30,17 @@ public class EmprestimoController {
         } catch (RuntimeException e) {
             // 6. Em caso de erro (ex: cliente inativo), retorna uma resposta HTTP 400 Bad Request com a mensagem de erro
             return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @PostMapping("/{id}/devolver")
+    public ResponseEntity<?> realizarDevolucao(@PathVariable Long id) {
+        try {
+            DevolucaoResponseDTO response = emprestimoService.realizarDevolucao(id);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            // Retorna a mensagem de erro específica do serviço
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.libmanager.libmanager.service;
 
+import com.libmanager.libmanager.dto.DevolucaoResponseDTO;
 import com.libmanager.libmanager.repository.ClienteRepository;
 import com.libmanager.libmanager.repository.EmprestimoRepository;
 import com.libmanager.libmanager.repository.LivroRepository;
@@ -14,6 +15,7 @@ import com.libmanager.libmanager.model.Livro;
 import com.libmanager.libmanager.model.Usuario;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -83,5 +85,38 @@ public class EmprestimoService {
 
         // Salva o novo empréstimo no banco. A transação também salva as alterações em Livro e Cliente.
         return emprestimoRepository.save(novoEmprestimo);
+    }
+
+    public DevolucaoResponseDTO realizarDevolucao(Long emprestimoId){
+        Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
+                .orElseThrow(() -> new RuntimeException("Empréstimo com ID " + emprestimoId + " não encontrado."));
+        if (emprestimo.getStatus() != StatusEmprestimo.ATIVO) {
+            throw new RuntimeException("Este empréstimo não está ativo e não pode ser devolvido novamente.");
+        }
+
+        Livro livro = emprestimo.getLivro();
+        Cliente cliente = emprestimo.getCliente();
+        LocalDate dataDevolucao = LocalDate.now();
+        double multa = 0;
+
+        if (dataDevolucao.isAfter(emprestimo.getDataDevolucaoPrevista())) {
+            long diasAtraso = ChronoUnit.DAYS.between(emprestimo.getDataDevolucaoPrevista(), dataDevolucao);
+            double taxaDiaria = 2.50; // A taxa pode ser externalizada para um arquivo de configuração
+            multa = diasAtraso * taxaDiaria;
+            emprestimo.setStatus(StatusEmprestimo.FINALIZADO_COM_ATRASO);
+        } else {
+            emprestimo.setStatus(StatusEmprestimo.FINALIZADO);
+        }
+
+        emprestimo.setDataDevolucaoRealizada(dataDevolucao);
+        emprestimo.setMultaValor(multa);
+
+        livro.setQuantDisponivel(livro.getQuantDisponivel() + 1);
+        cliente.setLivroEmprestado(false);
+
+        emprestimoRepository.save(emprestimo);
+
+        String mensagem = (multa > 0) ? "Devolução realizada com atraso." : "Devolução realizada no prazo.";
+        return new DevolucaoResponseDTO(mensagem, emprestimo.getId(), emprestimo.getStatus(), multa);
     }
 }
