@@ -1,5 +1,5 @@
 .card {
-  max-width: 800px;
+  max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #fff;
@@ -28,6 +28,17 @@
   display: inline-block;
 }
 
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.form-row .input-group {
+  flex: 1;
+  min-width: 180px;
+}
+
 .input-group {
   margin-bottom: 1rem;
 }
@@ -38,8 +49,6 @@
   font-weight: 500;
   color: #555;
 }
-
-/* Herda os estilos de input e button de index.css */
 
 .mensagem-erro {
   color: #d93025;

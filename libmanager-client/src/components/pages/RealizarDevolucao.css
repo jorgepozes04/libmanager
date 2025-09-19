@@ -5,11 +5,26 @@
   background-color: #fff;
   border-radius: 8px;
   box-shadow: var(--sombra-caixa);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.form-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--cor-primaria);
 }
 
 .input-group {
   position: relative;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .input-group label {
@@ -22,7 +37,7 @@
 .search-results {
   list-style: none;
   padding: 0;
-  margin: 0.5rem 0 1.5rem 0;
+  margin: 0.5rem 0 0 0;
   border: 1px solid #ddd;
   border-radius: 4px;
   max-height: 200px;
@@ -31,6 +46,7 @@
   background-color: white;
   width: 100%;
   z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-results li {
@@ -47,22 +63,6 @@
   background-color: #f5f5f5;
 }
 
-.selecao-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  border-radius: 4px;
-}
-
-.selecao-info p {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
 .btn-link {
   background: none;
   border: none;
@@ -70,6 +70,12 @@
   text-decoration: underline;
   cursor: pointer;
   font-size: 0.9rem;
+  padding: 0;
+  font-weight: normal;
+}
+.btn-link:hover {
+  background-color: transparent;
+  color: var(--cor-primaria-hover);
 }
 
 .emprestimo-detalhes {
@@ -77,6 +83,7 @@
   padding: 1.5rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
 .emprestimo-detalhes h4 {
@@ -87,19 +94,12 @@
   margin-top: 1rem;
 }
 
-.mensagem-erro {
-  color: #d93025;
-  margin-top: 1rem;
-  text-align: center;
-  font-weight: bold;
-}
-
 .resultado-devolucao {
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding: 1.5rem;
-  border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f0fdf4; /* Verde claro */
+  border: 1px solid #bbf7d0; /* Verde mais escuro */
 }
 
 .resultado-devolucao h3 {
@@ -116,4 +116,16 @@
   color: #d93025;
   font-weight: bold;
   font-size: 1.2rem;
+}
+
+.mensagem {
+  text-align: center;
+  font-weight: bold;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.mensagem-erro {
+  color: #d93025;
+  background-color: #fbeae9;
 }

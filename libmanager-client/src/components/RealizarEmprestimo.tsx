@@ -1,161 +1,203 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { realizarEmprestimo, searchClientes, searchLivros } from '../services/apiService';
-import './RealizarEmprestimo.css';
+import React, { useState, useEffect } from "react";
+import {
+  realizarEmprestimo,
+  searchClientes,
+  searchLivros,
+} from "../services/apiService";
+import "./RealizarEmprestimo.css";
 
 // Interfaces para os tipos de dados
 interface Cliente {
-    id: number;
-    nome: string;
-    cpf: string;
+  id: number;
+  nome: string;
+  cpf: string;
 }
 
 interface Livro {
-    id: number;
-    titulo: string;
-    autor: string;
-    quantDisponivel: number;
+  id: number;
+  titulo: string;
+  autor: string;
+  quantDisponivel: number;
 }
 
 interface EmprestimoProps {
-    usuarioId: number;
+  usuarioId: number;
 }
 
 function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
-    // Estados para a busca
-    const [clienteQuery, setClienteQuery] = useState('');
-    const [livroQuery, setLivroQuery] = useState('');
-    const [clienteResults, setClienteResults] = useState<Cliente[]>([]);
-    const [livroResults, setLivroResults] = useState<Livro[]>([]);
+  const [clienteQuery, setClienteQuery] = useState("");
+  const [livroQuery, setLivroQuery] = useState("");
+  const [clienteResults, setClienteResults] = useState<Cliente[]>([]);
+  const [livroResults, setLivroResults] = useState<Livro[]>([]);
 
-    // Estados para os itens selecionados
-    const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
-    const [selectedLivro, setSelectedLivro] = useState<Livro | null>(null);
+  const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
+  const [selectedLivro, setSelectedLivro] = useState<Livro | null>(null);
 
-    // Estados para mensagens
-    const [mensagem, setMensagem] = useState('');
-    const [isError, setIsError] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  const [isError, setIsError] = useState(false);
 
-    // Referência para o timer do debounce
-    const clienteDebounceTimer = useRef<NodeJS.Timeout | null>(null);
-    const livroDebounceTimer = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    if (clienteQuery.trim() === "") {
+      setClienteResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const results = await searchClientes(clienteQuery);
+      setClienteResults(results);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [clienteQuery]);
 
-    // Efeito para buscar clientes dinamicamente
-    useEffect(() => {
-        if (clienteDebounceTimer.current) {
-            clearTimeout(clienteDebounceTimer.current);
-        }
-        if (clienteQuery.trim() !== '') {
-            clienteDebounceTimer.current = setTimeout(async () => {
-                const results = await searchClientes(clienteQuery);
-                setClienteResults(results);
-            }, 300); // Espera 300ms após o usuário parar de digitar
-        } else {
-            setClienteResults([]); // Limpa os resultados se o campo estiver vazio
-        }
-    }, [clienteQuery]);
+  useEffect(() => {
+    if (livroQuery.trim() === "") {
+      setLivroResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const results = await searchLivros(livroQuery);
+      setLivroResults(results);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [livroQuery]);
 
-    // Efeito para buscar livros dinamicamente
-    useEffect(() => {
-        if (livroDebounceTimer.current) {
-            clearTimeout(livroDebounceTimer.current);
-        }
-        if (livroQuery.trim() !== '') {
-            livroDebounceTimer.current = setTimeout(async () => {
-                const results = await searchLivros(livroQuery);
-                setLivroResults(results);
-            }, 300); // Espera 300ms
-        } else {
-            setLivroResults([]);
-        }
-    }, [livroQuery]);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!selectedCliente || !selectedLivro) {
+      setIsError(true);
+      setMensagem("Por favor, selecione um cliente e um livro.");
+      return;
+    }
 
-    // Função de submissão do empréstimo
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        if (!selectedCliente || !selectedLivro) {
-            setIsError(true);
-            setMensagem('Por favor, selecione um cliente e um livro.');
-            return;
-        }
-
-        const emprestimoData = {
-            idCliente: selectedCliente.id,
-            idLivro: selectedLivro.id,
-            idUsuario: usuarioId,
-        };
-
-        try {
-            const resultado = await realizarEmprestimo(emprestimoData);
-            setIsError(false);
-            setMensagem(`Empréstimo realizado com sucesso! ID: ${resultado.id}`);
-            // Limpa o formulário
-            setSelectedCliente(null);
-            setSelectedLivro(null);
-        } catch (error) {
-            setIsError(true);
-            setMensagem('Falha ao realizar empréstimo. Verifique os dados e tente novamente.');
-        }
+    const emprestimoData = {
+      idCliente: selectedCliente.id,
+      idLivro: selectedLivro.id,
+      idUsuario: usuarioId,
     };
 
-    return (
-        <div className="card">
-            <h1>Realizar Empréstimo</h1>
+    try {
+      const resultado = await realizarEmprestimo(emprestimoData);
+      setIsError(false);
+      setMensagem(`Empréstimo realizado com sucesso! ID: ${resultado.id}`);
+      // Limpa o formulário
+      setSelectedCliente(null);
+      setSelectedLivro(null);
+      setClienteQuery("");
+      setLivroQuery("");
+    } catch (error) {
+      setIsError(true);
+      setMensagem(
+        "Falha ao realizar empréstimo. O cliente pode já ter um livro emprestado ou não haver exemplares disponíveis."
+      );
+    }
+  };
 
-            <div className="selecao-info">
-                <p><strong>Cliente:</strong> {selectedCliente ? `${selectedCliente.nome} (CPF: ${selectedCliente.cpf})` : 'Nenhum selecionado'}</p>
-                <p><strong>Livro:</strong> {selectedLivro ? `${selectedLivro.titulo} (Autor: ${selectedLivro.autor})` : 'Nenhum selecionado'}</p>
-            </div>
-
-            <form onSubmit={handleSubmit}>
-                {/* Busca de Cliente */}
-                <div className="input-group">
-                    <label>Buscar Cliente por Nome</label>
-                    <input
-                        type="text"
-                        value={clienteQuery}
-                        onChange={(e) => setClienteQuery(e.target.value)}
-                        placeholder="Comece a digitar o nome do cliente..."
-                    />
-                </div>
-                {clienteResults.length > 0 && (
-                    <ul className="search-results">
-                        {clienteResults.map(cliente => (
-                            <li key={cliente.id} onClick={() => { setSelectedCliente(cliente); setClienteResults([]); setClienteQuery(''); }}>
-                                {cliente.nome} - {cliente.cpf}
-                            </li>
-                        ))}
-                    </ul>
-                )}
-
-                {/* Busca de Livro */}
-                <div className="input-group">
-                    <label>Buscar Livro por Título</label>
-                    <input
-                        type="text"
-                        value={livroQuery}
-                        onChange={(e) => setLivroQuery(e.target.value)}
-                        placeholder="Comece a digitar o título do livro..."
-                    />
-                </div>
-                {livroResults.length > 0 && (
-                    <ul className="search-results">
-                        {livroResults.map(livro => (
-                            <li key={livro.id} onClick={() => { setSelectedLivro(livro); setLivroResults([]); setLivroQuery(''); }}>
-                                {livro.titulo} ({livro.quantDisponivel} disponíveis)
-                            </li>
-                        ))}
-                    </ul>
-                )}
-
-                <button type="submit" disabled={!selectedCliente || !selectedLivro}>Confirmar Empréstimo</button>
-            </form>
-            {mensagem && (
-                <p className={isError ? 'mensagem-erro' : 'mensagem-sucesso'}>
-                    {mensagem}
-                </p>
+  return (
+    <div className="card">
+      <h1>Realizar Empréstimo</h1>
+      <form onSubmit={handleSubmit} className="emprestimo-form">
+        <div className="form-section">
+          <h2>1. Selecione o Cliente</h2>
+          <div className="input-group">
+            <label htmlFor="cliente-search">Buscar Cliente por Nome</label>
+            <input
+              id="cliente-search"
+              type="text"
+              value={clienteQuery}
+              onChange={(e) => setClienteQuery(e.target.value)}
+              placeholder="Comece a digitar o nome do cliente..."
+              disabled={!!selectedCliente}
+            />
+            {clienteResults.length > 0 && (
+              <ul className="search-results">
+                {clienteResults.map((cliente) => (
+                  <li
+                    key={cliente.id}
+                    onClick={() => {
+                      setSelectedCliente(cliente);
+                      setClienteResults([]);
+                      setClienteQuery(cliente.nome);
+                    }}
+                  >
+                    {cliente.nome} - CPF: {cliente.cpf}
+                  </li>
+                ))}
+              </ul>
             )}
+          </div>
         </div>
-    );
+
+        <div className="form-section">
+          <h2>2. Selecione o Livro</h2>
+          <div className="input-group">
+            <label htmlFor="livro-search">Buscar Livro por Título</label>
+            <input
+              id="livro-search"
+              type="text"
+              value={livroQuery}
+              onChange={(e) => setLivroQuery(e.target.value)}
+              placeholder="Comece a digitar o título do livro..."
+              disabled={!!selectedLivro}
+            />
+            {livroResults.length > 0 && (
+              <ul className="search-results">
+                {livroResults.map((livro) => (
+                  <li
+                    key={livro.id}
+                    onClick={() => {
+                      setSelectedLivro(livro);
+                      setLivroResults([]);
+                      setLivroQuery(livro.titulo);
+                    }}
+                  >
+                    {livro.titulo} ({livro.quantDisponivel} disponíveis)
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        {(selectedCliente || selectedLivro) && (
+          <div className="form-section resumo-selecao">
+            <h2>Resumo</h2>
+            <p>
+              <strong>Cliente:</strong>{" "}
+              {selectedCliente ? `${selectedCliente.nome}` : "Não selecionado"}
+            </p>
+            <p>
+              <strong>Livro:</strong>{" "}
+              {selectedLivro ? `${selectedLivro.titulo}` : "Não selecionado"}
+            </p>
+            <button
+              type="button"
+              className="btn-limpar"
+              onClick={() => {
+                setSelectedCliente(null);
+                setSelectedLivro(null);
+                setClienteQuery("");
+                setLivroQuery("");
+              }}
+            >
+              Limpar Seleção
+            </button>
+          </div>
+        )}
+
+        <button type="submit" disabled={!selectedCliente || !selectedLivro}>
+          Confirmar Empréstimo
+        </button>
+      </form>
+      {mensagem && (
+        <p
+          className={`mensagem ${
+            isError ? "mensagem-erro" : "mensagem-sucesso"
+          }`}
+        >
+          {mensagem}
+        </p>
+      )}
+    </div>
+  );
 }
 
 export default RealizarEmprestimo;

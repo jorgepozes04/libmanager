@@ -35,10 +35,9 @@ function RealizarDevolucao() {
     return () => clearTimeout(timer);
   }, [clienteQuery]);
 
-  // Função para quando um cliente é selecionado da lista
   const handleSelectCliente = async (cliente: Cliente) => {
     setSelectedCliente(cliente);
-    setClienteQuery("");
+    setClienteQuery(cliente.nome);
     setClienteResults([]);
     setErro("");
     setDevolucaoResultado(null);
@@ -55,7 +54,6 @@ function RealizarDevolucao() {
     }
   };
 
-  // Função para confirmar a devolução
   const handleDevolucao = async () => {
     if (!emprestimoAtivo) return;
 
@@ -74,6 +72,7 @@ function RealizarDevolucao() {
 
   const resetState = () => {
     setSelectedCliente(null);
+    setClienteQuery("");
     setEmprestimoAtivo(null);
     setDevolucaoResultado(null);
     setErro("");
@@ -83,16 +82,18 @@ function RealizarDevolucao() {
     <div className="card">
       <h1>Realizar Devolução</h1>
 
-      {!selectedCliente ? (
-        // Etapa 1: Buscar Cliente
+      {/* Etapa 1: Buscar Cliente */}
+      <div className="form-section">
+        <h2>1. Busque o Cliente</h2>
         <div className="input-group">
-          <label htmlFor="clienteQuery">Buscar Cliente por Nome</label>
+          <label htmlFor="clienteQuery">Buscar por Nome</label>
           <input
             type="text"
             id="clienteQuery"
             value={clienteQuery}
             onChange={(e) => setClienteQuery(e.target.value)}
             placeholder="Comece a digitar o nome do cliente..."
+            disabled={!!selectedCliente}
           />
           {clienteResults.length > 0 && (
             <ul className="search-results">
@@ -107,20 +108,19 @@ function RealizarDevolucao() {
             </ul>
           )}
         </div>
-      ) : (
-        // Etapa 2: Exibir Empréstimo e Realizar Devolução
-        <div>
-          <div className="selecao-info">
-            <p>
-              <strong>Cliente:</strong> {selectedCliente.nome}
-            </p>
-            <button className="btn-link" onClick={resetState}>
-              Buscar outro cliente
-            </button>
-          </div>
+        {selectedCliente && (
+          <button className="btn-link" onClick={resetState}>
+            Limpar e buscar outro cliente
+          </button>
+        )}
+      </div>
 
+      {/* Etapa 2: Exibir Empréstimo e Realizar Devolução */}
+      {selectedCliente && (
+        <div className="form-section">
+          <h2>2. Confirme a Devolução</h2>
           {loading && <p>Buscando empréstimo...</p>}
-          {erro && <p className="mensagem-erro">{erro}</p>}
+          {erro && <p className="mensagem mensagem-erro">{erro}</p>}
 
           {emprestimoAtivo && (
             <div className="emprestimo-detalhes">
@@ -139,12 +139,12 @@ function RealizarDevolucao() {
                 ).toLocaleDateString()}
               </p>
               <button onClick={handleDevolucao} disabled={loading}>
-                {loading ? "Processando..." : "Confirmar Devolução deste Livro"}
+                {loading ? "Processando..." : "Confirmar Devolução"}
               </button>
             </div>
           )}
 
-          {!loading && !emprestimoAtivo && !devolucaoResultado && (
+          {!loading && !emprestimoAtivo && !devolucaoResultado && !erro && (
             <p>Este cliente não possui empréstimos ativos no momento.</p>
           )}
 
