@@ -3,9 +3,12 @@ package com.libmanager.libmanager.model;
 import com.libmanager.libmanager.enums.StatusMembro;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "membros")
 @Inheritance(strategy = InheritanceType.JOINED)
 

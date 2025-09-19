@@ -100,7 +100,6 @@ export interface DevolucaoResponse {
 export interface Usuario {
   id: number;
   nome: string;
-  cpf: string;
   nomeUsuario: string;
   cargo: string;
   status: string;
@@ -260,7 +259,17 @@ export const listarUsuarios = async (): Promise<Usuario[]> => {
     const response = await axios.get(`${API_URL}/admin/usuarios`);
     return response.data;
   } catch (error) {
-    throw new Error("Falha ao buscar usuários.");
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 403) {
+        throw new Error("Você não tem permissão para acessar este recurso.");
+      }
+      // Você pode adicionar outros tratamentos de status aqui, se necessário
+      throw new Error(
+        error.response.data.message || "Falha ao buscar usuários."
+      );
+    }
+    // Erro de rede ou outro problema
+    throw new Error("Falha na comunicação com o servidor.");
   }
 };
 

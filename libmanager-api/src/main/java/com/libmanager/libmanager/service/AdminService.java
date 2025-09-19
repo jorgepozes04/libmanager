@@ -1,6 +1,7 @@
 package com.libmanager.libmanager.service;
 
 import com.libmanager.libmanager.dto.UsuarioDTO;
+import com.libmanager.libmanager.dto.UsuarioResponseDTO; // Importe o novo DTO
 import com.libmanager.libmanager.enums.Cargo;
 import com.libmanager.libmanager.enums.StatusMembro;
 import com.libmanager.libmanager.model.Endereco;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors; // Importe o Collectors
 
 @Service
 public class AdminService {
@@ -21,8 +23,17 @@ public class AdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<Usuario> listarTodosUsuarios() {
-        return usuarioRepository.findAll();
+    // Altere o tipo de retorno do método
+    public List<UsuarioResponseDTO> listarTodosUsuarios() {
+        // Mapeie a entidade para o DTO
+        return usuarioRepository.findAll().stream()
+                .map(usuario -> new UsuarioResponseDTO(
+                        usuario.getId(),
+                        usuario.getNome(),
+                        usuario.getNomeUsuario(),
+                        usuario.getCargo(),
+                        usuario.getStatus()
+                )).collect(Collectors.toList());
     }
 
     public Usuario criarUsuario(UsuarioDTO usuarioDTO) {

@@ -2,13 +2,15 @@ package com.libmanager.libmanager.model;
 
 import com.libmanager.libmanager.enums.StatusEmprestimo;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "emprestimos")
-@Data
+@Getter
+@Setter
 public class Emprestimo {
 
     @Id

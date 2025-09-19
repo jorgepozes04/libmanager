@@ -1,6 +1,7 @@
 package com.libmanager.libmanager.controller;
 
 import com.libmanager.libmanager.dto.UsuarioDTO;
+import com.libmanager.libmanager.dto.UsuarioResponseDTO; // Importe o novo DTO
 import com.libmanager.libmanager.model.Usuario;
 import com.libmanager.libmanager.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,9 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    // Altere o tipo de retorno na assinatura do método
     @GetMapping("/usuarios")
-    public ResponseEntity<List<Usuario>> listarUsuarios() {
+    public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios() {
         return ResponseEntity.ok(adminService.listarTodosUsuarios());
     }
 

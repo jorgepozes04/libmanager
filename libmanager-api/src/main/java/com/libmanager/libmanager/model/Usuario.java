@@ -4,11 +4,13 @@ import com.libmanager.libmanager.enums.Cargo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuarios")
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @PrimaryKeyJoinColumn(name = "membro_id")
 public class Usuario extends Membro {
 

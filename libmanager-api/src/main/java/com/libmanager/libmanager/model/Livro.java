@@ -3,13 +3,13 @@ package com.libmanager.libmanager.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "livros")
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @PrimaryKeyJoinColumn(name = "publicacao_id")
 public class Livro extends Publicacao {
 

@@ -2,12 +2,14 @@ package com.libmanager.libmanager.model;
 
 import com.libmanager.libmanager.enums.TipoPublicacao;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "publicacoes")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Data
+@Getter
+@Setter
 public abstract class Publicacao {
 
     @Id

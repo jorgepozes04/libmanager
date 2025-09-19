@@ -1,13 +1,13 @@
 package com.libmanager.libmanager.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "revistas")
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @PrimaryKeyJoinColumn(name = "publicacao_id")
 public class Revista extends Publicacao {
 
