@@ -18,6 +18,7 @@ public class ConsultaService {
     private final ClienteRepository clienteRepository;
     private final RevistaRepository revistaRepository;
 
+    // Consultar Livros
     public List<Livro> consultarLivros(String titulo, String autor) {
         if (titulo != null && !titulo.isEmpty()) {
             return livroRepository.findByTituloContainingIgnoreCase(titulo);
@@ -28,6 +29,7 @@ public class ConsultaService {
         return livroRepository.findAll();
     }
 
+    // Consultar Revistas
     public List<Revista> consultarRevistas(String titulo, String editora) {
         if (titulo != null && !titulo.isEmpty()) {
             return revistaRepository.findByTituloContainingIgnoreCase(titulo);
@@ -38,6 +40,7 @@ public class ConsultaService {
         return revistaRepository.findAll();
     }
 
+    // Consultar Clientes
     public List<Cliente> consultarClientes(String nome, String cpf) {
         if (nome != null && !nome.isEmpty()) {
             return clienteRepository.findByNomeContainingIgnoreCase(nome);

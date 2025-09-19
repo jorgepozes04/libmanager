@@ -1,0 +1,39 @@
+.card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: var(--sombra-caixa);
+}
+
+.cadastro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.mensagem-erro {
+  color: #d93025;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.mensagem-sucesso {
+  color: #1e8e3e;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+}

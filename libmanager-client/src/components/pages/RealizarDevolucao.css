@@ -1,0 +1,119 @@
+.card {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: var(--sombra-caixa);
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.search-results {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 1.5rem 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  z-index: 10;
+}
+
+.search-results li {
+  padding: 0.75rem;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.search-results li:last-child {
+  border-bottom: none;
+}
+
+.search-results li:hover {
+  background-color: #f5f5f5;
+}
+
+.selecao-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.selecao-info p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--cor-primaria);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.emprestimo-detalhes {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.emprestimo-detalhes h4 {
+  margin-top: 0;
+}
+
+.emprestimo-detalhes button {
+  margin-top: 1rem;
+}
+
+.mensagem-erro {
+  color: #d93025;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.resultado-devolucao {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f0fdf4; /* Verde claro */
+}
+
+.resultado-devolucao h3 {
+  margin-top: 0;
+  color: #15803d; /* Verde escuro */
+}
+
+.resultado-devolucao p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.resultado-devolucao .multa {
+  color: #d93025;
+  font-weight: bold;
+  font-size: 1.2rem;
+}

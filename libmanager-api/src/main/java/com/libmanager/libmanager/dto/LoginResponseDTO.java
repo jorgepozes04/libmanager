@@ -10,4 +10,5 @@ public class LoginResponseDTO {
     private String nomeUsuario;
     private Long id;
     private String cargo;
+    private String token;
 }

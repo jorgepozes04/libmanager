@@ -1,0 +1,56 @@
+.card {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: var(--sombra-caixa);
+}
+
+.cadastro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.form-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--cor-primaria);
+  border-bottom: 2px solid var(--cor-primaria);
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Herda os estilos de input e button de index.css */
+
+.mensagem-erro {
+  color: #d93025;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.mensagem-sucesso {
+  color: #1e8e3e;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+}

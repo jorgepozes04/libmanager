@@ -119,4 +119,8 @@ public class EmprestimoService {
         String mensagem = (multa > 0) ? "Devolução realizada com atraso." : "Devolução realizada no prazo.";
         return new DevolucaoResponseDTO(mensagem, emprestimo.getId(), emprestimo.getStatus(), multa);
     }
+
+    public Optional<Emprestimo> buscarEmprestimoAtivoPorCliente(Long clienteId) {
+        return emprestimoRepository.findByClienteIdAndStatus(clienteId, StatusEmprestimo.ATIVO);
+    }
 }

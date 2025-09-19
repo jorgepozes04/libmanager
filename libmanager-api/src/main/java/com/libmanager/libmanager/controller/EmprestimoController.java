@@ -43,4 +43,11 @@ public class EmprestimoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/cliente/{clienteId}/ativo")
+    public ResponseEntity<Emprestimo> buscarEmprestimoAtivoPorCliente(@PathVariable Long clienteId) {
+        return emprestimoService.buscarEmprestimoAtivoPorCliente(clienteId)
+                .map(ResponseEntity::ok) // Retorna 200 OK com o empréstimo se encontrado
+                .orElse(ResponseEntity.notFound().build()); // Retorna 404 Not Found se não houver
+    }
 }

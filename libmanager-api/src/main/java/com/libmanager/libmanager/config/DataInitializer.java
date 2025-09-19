@@ -2,6 +2,7 @@ package com.libmanager.libmanager.config;
 
 import com.libmanager.libmanager.enums.Cargo;
 import com.libmanager.libmanager.enums.StatusMembro;
+import com.libmanager.libmanager.model.Endereco;
 import com.libmanager.libmanager.model.Usuario;
 import com.libmanager.libmanager.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,15 @@ public class DataInitializer implements CommandLineRunner {
             admin.setSenha(passwordEncoder.encode("1227")); // Senha padrão
             admin.setStatus(StatusMembro.ATIVO);
             admin.setCargo(Cargo.ADMIN); // Definir o cargo como ADMIN
-            // O endereço pode ser nulo ou você pode criar um endereço padrão
-            admin.setEndereco(null);
+            Endereco enderecoAdmin = new Endereco();
+            enderecoAdmin.setRua("Rua do Sistema");
+            enderecoAdmin.setNumero("S/N");
+            enderecoAdmin.setBairro("Centro");
+            enderecoAdmin.setCidade("Cidade Padrão");
+            enderecoAdmin.setEstado("SP");
+            enderecoAdmin.setCep("00000-000");
+
+            admin.setEndereco(enderecoAdmin); // Associa o endereço ao admin
 
             usuarioRepository.save(admin);
 
