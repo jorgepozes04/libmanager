@@ -8,6 +8,7 @@ import {
   type Revista,
 } from "../../services/apiService";
 import "./Consultas.css";
+import Page from "../common/Page";
 
 type Categoria = "clientes" | "livros" | "revistas";
 
@@ -127,8 +128,7 @@ function Consultas() {
   };
 
   return (
-    <div className="card">
-      <h1>Realizar Consultas</h1>
+    <Page title="Realizar Consultas">
       <div className="tabs-container">
         <button
           onClick={() => setCategoriaAtiva("clientes")}
@@ -163,7 +163,7 @@ function Consultas() {
       </div>
 
       <div className="results-container">{renderTabelaResultados()}</div>
-    </div>
+    </Page>
   );
 }
 

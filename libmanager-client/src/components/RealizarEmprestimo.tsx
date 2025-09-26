@@ -5,8 +5,8 @@ import {
   searchLivros,
 } from "../services/apiService";
 import "./RealizarEmprestimo.css";
+import Page from "./common/Page";
 
-// Interfaces para os tipos de dados
 interface Cliente {
   id: number;
   nome: string;
@@ -78,7 +78,6 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
       const resultado = await realizarEmprestimo(emprestimoData);
       setIsError(false);
       setMensagem(`Empréstimo realizado com sucesso! ID: ${resultado.id}`);
-      // Limpa o formulário
       setSelectedCliente(null);
       setSelectedLivro(null);
       setClienteQuery("");
@@ -92,8 +91,7 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
   };
 
   return (
-    <div className="card">
-      <h1>Realizar Empréstimo</h1>
+    <Page title="Realizar Empréstimo">
       <form onSubmit={handleSubmit} className="emprestimo-form">
         <div className="form-section">
           <h2>1. Selecione o Cliente</h2>
@@ -196,7 +194,7 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
           {mensagem}
         </p>
       )}
-    </div>
+    </Page>
   );
 }
 

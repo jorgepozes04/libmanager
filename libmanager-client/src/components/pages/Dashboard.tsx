@@ -1,7 +1,7 @@
 import React from 'react';
 import './Dashboard.css';
+import Page from '../common/Page'; // Importar o Page
 
-// Interface para definir a propriedade que o Dashboard receberá
 interface DashboardProps {
     onNavigate: (view: string) => void;
     userCargo: string;
@@ -9,8 +9,7 @@ interface DashboardProps {
 
 function Dashboard({ onNavigate, userCargo }: DashboardProps) {
     return (
-        <div className="dashboard-container">
-            <h1 className="dashboard-title">Painel de Controle</h1>
+        <Page title="Painel de Controle">
             <div className="dashboard-grid">
                 {/* Opções do Menu */}
                 <div className="dashboard-card" onClick={() => onNavigate('emprestimo')}>
@@ -51,7 +50,7 @@ function Dashboard({ onNavigate, userCargo }: DashboardProps) {
                     </div>
                 )}
             </div>
-        </div>
+        </Page>
     );
 }
 

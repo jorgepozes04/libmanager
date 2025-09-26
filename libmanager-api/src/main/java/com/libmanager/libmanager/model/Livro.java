@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @PrimaryKeyJoinColumn(name = "publicacao_id")
-public class Livro extends Publicacao {
+public class Livro extends Publicacao implements Emprestavel {
 
     private String autor;
 }

@@ -1,25 +1,34 @@
-.navbar {
-    background-color: var(--cor-fundo);
-    padding: 1rem;
+/* Container principal da aplicação (APENAS para a visão autenticada) */
+.app-container {
     display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #f0f0f0;
+    background-color: #f4f7f9;
+    min-height: 100vh; /* Garante que o container ocupe a altura toda */
 }
 
-.navbar button {
-    background-color: transparent;
-    color: var(--cor-texto);
-    border: 1px solid transparent;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 1rem;
+/* Área de conteúdo principal */
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+
+    /* --- ALTERAÇÃO PRINCIPAL --- */
+    /* Transforma o main-content em um container que centraliza o seu filho */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
 }
 
-.navbar button:hover {
-    background-color: #f7f7f7;
-    border-color: var(--cor-borda);
+/* Estilo para quando a sidebar estiver recolhida */
+.main-content.sidebar-collapsed {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+}
+
+/* Wrapper para centralizar o conteúdo das páginas */
+.content-wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto; /* Centraliza horizontalmente */
 }

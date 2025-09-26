@@ -30,7 +30,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             var username = tokenService.validateToken(token);
             var usuario = usuarioRepository.findByNomeUsuario(username).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-            // Informa ao Spring que o usuário está autenticado e qual seu cargo (ROLE)
             var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getCargo().name()));
             var authentication = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);

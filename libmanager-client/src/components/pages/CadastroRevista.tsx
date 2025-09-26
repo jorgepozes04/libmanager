@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { cadastrarRevista } from "../../services/apiService";
 import "./CadastroRevista.css";
+import Page from "../common/Page";
 
 function CadastroRevista() {
   const [formData, setFormData] = useState({
     titulo: "",
     editora: "",
-    mesPublicacao: new Date().getMonth() + 1, // Mês atual
-    anoPublicacao: new Date().getFullYear(), // Ano atual
+    mesPublicacao: new Date().getMonth() + 1,
+    anoPublicacao: new Date().getFullYear(),
     quantDisponivel: 1,
   });
 
@@ -31,7 +32,6 @@ function CadastroRevista() {
       const novaRevista = await cadastrarRevista(formData);
       setIsError(false);
       setMensagem(`Revista "${novaRevista.titulo}" cadastrada com sucesso!`);
-      // Limpa o formulário
       setFormData({
         titulo: "",
         editora: "",
@@ -46,8 +46,7 @@ function CadastroRevista() {
   };
 
   return (
-    <div className="card">
-      <h1>Cadastro de Revista</h1>
+    <Page title="Cadastro de Revista">
       <form onSubmit={handleSubmit} className="cadastro-form">
         <div className="input-group">
           <label htmlFor="titulo">Título da Revista</label>
@@ -118,7 +117,7 @@ function CadastroRevista() {
           {mensagem}
         </p>
       )}
-    </div>
+    </Page>
   );
 }
 

@@ -1,12 +1,3 @@
-.card {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: var(--sombra-caixa);
-}
-
 .cadastro-form {
   display: flex;
   flex-direction: column;

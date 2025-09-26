@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { cadastrarCliente } from "../../services/apiService";
 import "./CadastroCliente.css";
+import Page from "../common/Page";
 
 function CadastroCliente() {
-  // Estado para armazenar os dados do formulário
   const [formData, setFormData] = useState({
     nome: "",
     cpf: "",
@@ -19,7 +19,6 @@ function CadastroCliente() {
   const [mensagem, setMensagem] = useState("");
   const [isError, setIsError] = useState(false);
 
-  // Função para atualizar o estado conforme o usuário digita
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -28,7 +27,6 @@ function CadastroCliente() {
     }));
   };
 
-  // Função para lidar com o envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensagem("");
@@ -52,7 +50,6 @@ function CadastroCliente() {
       const novoCliente = await cadastrarCliente(clienteData);
       setIsError(false);
       setMensagem(`Cliente "${novoCliente.nome}" cadastrado com sucesso!`);
-      // Limpa o formulário
       setFormData({
         nome: "",
         cpf: "",
@@ -71,8 +68,7 @@ function CadastroCliente() {
   };
 
   return (
-    <div className="card">
-      <h1>Cadastro de Cliente</h1>
+    <Page title="Cadastro de Cliente">
       <form onSubmit={handleSubmit} className="cadastro-form">
         <div className="form-section">
           <h2>Dados Pessoais</h2>
@@ -194,7 +190,7 @@ function CadastroCliente() {
           {mensagem}
         </p>
       )}
-    </div>
+    </Page>
   );
 }
 

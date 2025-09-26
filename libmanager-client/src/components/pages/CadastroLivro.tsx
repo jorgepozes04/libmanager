@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { cadastrarLivro } from "../../services/apiService";
 import "./CadastroLivro.css";
+import Page from "../common/Page";
 
 function CadastroLivro() {
   const [formData, setFormData] = useState({
     titulo: "",
     autor: "",
-    quantDisponivel: 1, // Inicia com 1 por padrão
+    quantDisponivel: 1,
   });
 
   const [mensagem, setMensagem] = useState("");
@@ -16,7 +17,6 @@ function CadastroLivro() {
     const { name, value, type } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      // Converte para número se o input for do tipo 'number'
       [name]: type === "number" ? parseInt(value, 10) || 0 : value,
     }));
   };
@@ -36,7 +36,6 @@ function CadastroLivro() {
       const novoLivro = await cadastrarLivro(formData);
       setIsError(false);
       setMensagem(`Livro "${novoLivro.titulo}" cadastrado com sucesso!`);
-      // Limpa o formulário
       setFormData({
         titulo: "",
         autor: "",
@@ -49,8 +48,7 @@ function CadastroLivro() {
   };
 
   return (
-    <div className="card">
-      <h1>Cadastro de Livro</h1>
+    <Page title="Cadastro de Livro">
       <form onSubmit={handleSubmit} className="cadastro-form">
         <div className="input-group">
           <label htmlFor="titulo">Título do Livro</label>
@@ -94,7 +92,7 @@ function CadastroLivro() {
           {mensagem}
         </p>
       )}
-    </div>
+    </Page>
   );
 }
 

@@ -1,12 +1,3 @@
-.card {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: var(--sombra-caixa);
-}
-
 .tabs-container {
   display: flex;
   border-bottom: 2px solid #eee;

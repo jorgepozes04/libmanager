@@ -5,6 +5,7 @@ import {
   type Usuario,
 } from "../../services/apiService";
 import "./GerenciarUsuarios.css";
+import Page from "../common/Page";
 
 const initialFormData = {
   nome: "",
@@ -73,9 +74,9 @@ function GerenciarUsuarios() {
     try {
       await criarUsuario(usuarioData);
       alert("Usuário criado com sucesso!");
-      setFormData(initialFormData); // Limpa o formulário
-      setShowForm(false); // Esconde o formulário
-      fetchUsuarios(); // Recarrega a lista
+      setFormData(initialFormData);
+      setShowForm(false);
+      fetchUsuarios();
     } catch (error: any) {
       setFormErro(error.message);
     }
@@ -85,9 +86,9 @@ function GerenciarUsuarios() {
   if (erro) return <p className="mensagem-erro">{erro}</p>;
 
   return (
-    <div className="card">
+    <Page title="Gerenciar Usuários">
       <div className="header-container">
-        <h1>Gerenciar Usuários</h1>
+        <h2>Lista de Usuários</h2>
         <button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancelar" : "Adicionar Novo Usuário"}
         </button>
@@ -97,7 +98,6 @@ function GerenciarUsuarios() {
         <div className="form-container">
           <h2>Novo Usuário</h2>
           <form onSubmit={handleSubmit}>
-            {/* Reutilizando a estrutura de CadastroCliente para os campos */}
             <div className="form-section">
               <div className="input-group">
                 <label>Nome Completo</label>
@@ -214,7 +214,7 @@ function GerenciarUsuarios() {
           ))}
         </tbody>
       </table>
-    </div>
+    </Page>
   );
 }
 
