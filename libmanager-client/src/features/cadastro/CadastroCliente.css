@@ -4,34 +4,43 @@
   gap: 1.5rem;
 }
 
+/* Garante que a seção seja um container de bloco simples */
 .form-section {
+  display: flex; /* Garante que não seja grid ou flex */
   border: 1px solid #f0f0f0;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 2rem;
 }
 
+/* Estiliza o título da seção */
 .form-section h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
   color: var(--cor-primaria);
-  border-bottom: 2px solid var(--cor-primaria);
+  padding: 0;
+  border: none;
   padding-bottom: 0.5rem;
+  border-bottom: 2px solid #eee;
   display: inline-block;
+}
+
+/* Organiza as linhas de campos */
+.form-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .form-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.form-row .input-group {
-  flex: 1;
-  min-width: 180px;
+  gap: 1.5rem;
 }
 
 .input-group {
-  margin-bottom: 1rem;
+  flex: 1;
+  min-width: 180px;
+  margin-bottom: 0;
 }
 
 .input-group label {
@@ -41,16 +50,21 @@
   color: #555;
 }
 
-.mensagem-erro {
-  color: #d93025;
-  margin-top: 1rem;
+/* Mensagens de feedback */
+.mensagem-erro, .mensagem-sucesso {
+  margin-top: 1.5rem;
   text-align: center;
   font-weight: bold;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.mensagem-erro {
+  color: #d93025;
+  background-color: #fbeae9;
 }
 
 .mensagem-sucesso {
   color: #1e8e3e;
-  margin-top: 1rem;
-  text-align: center;
-  font-weight: bold;
+  background-color: #e6f4ea;
 }

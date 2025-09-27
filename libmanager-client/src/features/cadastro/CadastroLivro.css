@@ -1,11 +1,11 @@
 .cadastro-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.5rem; /* Espaçamento entre os campos */
 }
 
 .input-group {
-  margin-bottom: 1rem;
+  margin-bottom: 0; /* Remove margem extra */
 }
 
 .input-group label {
@@ -15,16 +15,21 @@
   color: #555;
 }
 
-.mensagem-erro {
-  color: #d93025;
-  margin-top: 1rem;
+/* Mensagens de feedback */
+.mensagem-erro, .mensagem-sucesso {
+  margin-top: 1.5rem;
   text-align: center;
   font-weight: bold;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.mensagem-erro {
+  color: #d93025;
+  background-color: #fbeae9;
 }
 
 .mensagem-sucesso {
   color: #1e8e3e;
-  margin-top: 1rem;
-  text-align: center;
-  font-weight: bold;
+  background-color: #e6f4ea;
 }

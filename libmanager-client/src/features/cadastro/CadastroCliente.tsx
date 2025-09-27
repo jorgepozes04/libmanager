@@ -72,113 +72,117 @@ function CadastroCliente() {
       <form onSubmit={handleSubmit} className="cadastro-form">
         <div className="form-section">
           <h2>Dados Pessoais</h2>
-          <div className="form-row">
-            <div className="input-group">
-              <label htmlFor="nome">Nome Completo</label>
-              <input
-                type="text"
-                id="nome"
-                name="nome"
-                value={formData.nome}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="cpf">CPF</label>
-              <input
-                type="text"
-                id="cpf"
-                name="cpf"
-                value={formData.cpf}
-                onChange={handleChange}
-                required
-              />
+          <div className="form-section-content">
+            <div className="form-row">
+              <div className="input-group">
+                <label htmlFor="nome">Nome Completo</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label htmlFor="cpf">CPF</label>
+                <input
+                  type="text"
+                  id="cpf"
+                  name="cpf"
+                  value={formData.cpf}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
           </div>
         </div>
 
         <div className="form-section">
           <h2>Endereço</h2>
-          <div className="form-row">
-            <div className="input-group">
-              <label htmlFor="cep">CEP</label>
-              <input
-                type="text"
-                id="cep"
-                name="cep"
-                value={formData.cep}
-                onChange={handleChange}
-                required
-              />
+          <div className="form-section-content">
+            <div className="form-row">
+              <div className="input-group">
+                <label htmlFor="cep">CEP</label>
+                <input
+                  type="text"
+                  id="cep"
+                  name="cep"
+                  value={formData.cep}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="input-group" style={{ flex: 2 }}>
+                <label htmlFor="rua">Rua</label>
+                <input
+                  type="text"
+                  id="rua"
+                  name="rua"
+                  value={formData.rua}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label htmlFor="numero">Número</label>
+                <input
+                  type="text"
+                  id="numero"
+                  name="numero"
+                  value={formData.numero}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-            <div className="input-group" style={{ flex: 2 }}>
-              <label htmlFor="rua">Rua</label>
-              <input
-                type="text"
-                id="rua"
-                name="rua"
-                value={formData.rua}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="numero">Número</label>
-              <input
-                type="text"
-                id="numero"
-                name="numero"
-                value={formData.numero}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="input-group">
-              <label htmlFor="complemento">Complemento</label>
-              <input
-                type="text"
-                id="complemento"
-                name="complemento"
-                value={formData.complemento}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="bairro">Bairro</label>
-              <input
-                type="text"
-                id="bairro"
-                name="bairro"
-                value={formData.bairro}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="cidade">Cidade</label>
-              <input
-                type="text"
-                id="cidade"
-                name="cidade"
-                value={formData.cidade}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="input-group" style={{ flex: 0.5 }}>
-              <label htmlFor="estado">Estado</label>
-              <input
-                type="text"
-                id="estado"
-                name="estado"
-                value={formData.estado}
-                onChange={handleChange}
-                maxLength={2}
-                required
-              />
+            <div className="form-row">
+              <div className="input-group">
+                <label htmlFor="complemento">Complemento</label>
+                <input
+                  type="text"
+                  id="complemento"
+                  name="complemento"
+                  value={formData.complemento}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="input-group">
+                <label htmlFor="bairro">Bairro</label>
+                <input
+                  type="text"
+                  id="bairro"
+                  name="bairro"
+                  value={formData.bairro}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label htmlFor="cidade">Cidade</label>
+                <input
+                  type="text"
+                  id="cidade"
+                  name="cidade"
+                  value={formData.cidade}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="input-group" style={{ flex: 0.5 }}>
+                <label htmlFor="estado">Estado</label>
+                <input
+                  type="text"
+                  id="estado"
+                  name="estado"
+                  value={formData.estado}
+                  onChange={handleChange}
+                  maxLength={2}
+                  required
+                />
+              </div>
             </div>
           </div>
         </div>
