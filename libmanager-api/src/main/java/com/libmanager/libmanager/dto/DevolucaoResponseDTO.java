@@ -1,6 +1,6 @@
 package com.libmanager.libmanager.dto;
 
-import com.libmanager.libmanager.enums.StatusEmprestimo;
+import com.libmanager.libmanager.domain.enums.StatusEmprestimo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

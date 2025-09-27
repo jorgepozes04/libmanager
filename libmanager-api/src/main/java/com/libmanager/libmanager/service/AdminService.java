@@ -2,11 +2,11 @@ package com.libmanager.libmanager.service;
 
 import com.libmanager.libmanager.dto.UsuarioDTO;
 import com.libmanager.libmanager.dto.UsuarioResponseDTO; // Importe o novo DTO
-import com.libmanager.libmanager.enums.Cargo;
-import com.libmanager.libmanager.enums.StatusMembro;
-import com.libmanager.libmanager.model.Endereco;
-import com.libmanager.libmanager.model.Usuario;
-import com.libmanager.libmanager.repository.UsuarioRepository;
+import com.libmanager.libmanager.domain.enums.Cargo;
+import com.libmanager.libmanager.domain.enums.StatusMembro;
+import com.libmanager.libmanager.domain.model.Endereco;
+import com.libmanager.libmanager.domain.model.Usuario;
+import com.libmanager.libmanager.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

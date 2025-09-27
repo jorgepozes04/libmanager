@@ -3,8 +3,9 @@ package com.libmanager.libmanager.service;
 
 import com.libmanager.libmanager.dto.LoginRequestDTO;
 import com.libmanager.libmanager.dto.LoginResponseDTO;
-import com.libmanager.libmanager.model.Usuario;
-import com.libmanager.libmanager.repository.UsuarioRepository;
+import com.libmanager.libmanager.domain.model.Usuario;
+import com.libmanager.libmanager.domain.repository.UsuarioRepository;
+import com.libmanager.libmanager.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

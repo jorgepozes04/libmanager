@@ -1,14 +1,16 @@
 package com.libmanager.libmanager.service;
 
+import com.libmanager.libmanager.domain.model.*;
+import com.libmanager.libmanager.domain.repository.ClienteRepository;
+import com.libmanager.libmanager.domain.repository.LivroRepository;
+import com.libmanager.libmanager.domain.repository.RevistaRepository;
+import com.libmanager.libmanager.domain.repository.UsuarioRepository;
 import com.libmanager.libmanager.dto.ClienteDTO;
 import com.libmanager.libmanager.dto.LivroDTO;
 import com.libmanager.libmanager.dto.RevistaDTO;
 import com.libmanager.libmanager.dto.UsuarioDTO;
-import com.libmanager.libmanager.enums.StatusMembro;
-import com.libmanager.libmanager.model.*;
-import com.libmanager.libmanager.repository.*;
+import com.libmanager.libmanager.domain.enums.StatusMembro;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;

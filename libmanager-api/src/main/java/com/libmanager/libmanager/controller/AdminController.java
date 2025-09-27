@@ -2,7 +2,7 @@ package com.libmanager.libmanager.controller;
 
 import com.libmanager.libmanager.dto.UsuarioDTO;
 import com.libmanager.libmanager.dto.UsuarioResponseDTO; // Importe o novo DTO
-import com.libmanager.libmanager.model.Usuario;
+import com.libmanager.libmanager.domain.model.Usuario;
 import com.libmanager.libmanager.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

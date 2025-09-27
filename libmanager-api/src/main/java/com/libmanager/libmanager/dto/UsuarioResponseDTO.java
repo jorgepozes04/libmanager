@@ -1,7 +1,7 @@
 package com.libmanager.libmanager.dto;
 
-import com.libmanager.libmanager.enums.Cargo;
-import com.libmanager.libmanager.enums.StatusMembro;
+import com.libmanager.libmanager.domain.enums.Cargo;
+import com.libmanager.libmanager.domain.enums.StatusMembro;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

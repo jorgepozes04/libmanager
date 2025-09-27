@@ -2,7 +2,7 @@ package com.libmanager.libmanager.controller;
 
 import com.libmanager.libmanager.dto.DevolucaoResponseDTO;
 import com.libmanager.libmanager.dto.EmprestimoRequestDTO;
-import com.libmanager.libmanager.model.Emprestimo;
+import com.libmanager.libmanager.domain.model.Emprestimo;
 import com.libmanager.libmanager.service.EmprestimoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

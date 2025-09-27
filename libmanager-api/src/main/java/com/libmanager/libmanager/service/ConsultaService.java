@@ -1,11 +1,11 @@
 package com.libmanager.libmanager.service;
 
-import com.libmanager.libmanager.model.Cliente;
-import com.libmanager.libmanager.model.Livro;
-import com.libmanager.libmanager.model.Revista;
-import com.libmanager.libmanager.repository.ClienteRepository;
-import com.libmanager.libmanager.repository.LivroRepository;
-import com.libmanager.libmanager.repository.RevistaRepository;
+import com.libmanager.libmanager.domain.model.Cliente;
+import com.libmanager.libmanager.domain.model.Livro;
+import com.libmanager.libmanager.domain.model.Revista;
+import com.libmanager.libmanager.domain.repository.ClienteRepository;
+import com.libmanager.libmanager.domain.repository.LivroRepository;
+import com.libmanager.libmanager.domain.repository.RevistaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

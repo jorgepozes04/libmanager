@@ -1,8 +1,8 @@
 package com.libmanager.libmanager.controller;
 
-import com.libmanager.libmanager.model.Cliente;
-import com.libmanager.libmanager.model.Livro;
-import com.libmanager.libmanager.model.Revista;
+import com.libmanager.libmanager.domain.model.Cliente;
+import com.libmanager.libmanager.domain.model.Livro;
+import com.libmanager.libmanager.domain.model.Revista;
 import com.libmanager.libmanager.service.ConsultaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

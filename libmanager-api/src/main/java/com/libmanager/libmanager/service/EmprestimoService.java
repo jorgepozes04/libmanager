@@ -1,18 +1,19 @@
 package com.libmanager.libmanager.service;
 
+import com.libmanager.libmanager.domain.enums.StatusMembro;
 import com.libmanager.libmanager.dto.DevolucaoResponseDTO;
-import com.libmanager.libmanager.repository.ClienteRepository;
-import com.libmanager.libmanager.repository.EmprestimoRepository;
-import com.libmanager.libmanager.repository.LivroRepository;
-import com.libmanager.libmanager.repository.UsuarioRepository;
+import com.libmanager.libmanager.domain.repository.ClienteRepository;
+import com.libmanager.libmanager.domain.repository.EmprestimoRepository;
+import com.libmanager.libmanager.domain.repository.LivroRepository;
+import com.libmanager.libmanager.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.libmanager.libmanager.dto.EmprestimoRequestDTO;
-import com.libmanager.libmanager.enums.StatusEmprestimo;
-import com.libmanager.libmanager.model.Cliente;
-import com.libmanager.libmanager.model.Emprestimo;
-import com.libmanager.libmanager.model.Livro;
-import com.libmanager.libmanager.model.Usuario;
+import com.libmanager.libmanager.domain.enums.StatusEmprestimo;
+import com.libmanager.libmanager.domain.model.Cliente;
+import com.libmanager.libmanager.domain.model.Emprestimo;
+import com.libmanager.libmanager.domain.model.Livro;
+import com.libmanager.libmanager.domain.model.Usuario;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -50,7 +51,7 @@ public class EmprestimoService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
 
         // Aplica as regras de negócio e pré-condições
-        if (cliente.getStatus() != com.libmanager.libmanager.enums.StatusMembro.ATIVO) {
+        if (cliente.getStatus() != StatusMembro.ATIVO) {
             throw new RuntimeException("Cliente não está ativo!");
         }
 
