@@ -3,14 +3,7 @@ import { useParams } from "react-router-dom";
 import { getClienteById, updateCliente } from "../../services/apiService";
 import Page from "../../components/common/Page";
 import "./Detalhes.css";
-import type { Cliente, Endereco } from "../../services/apiService";
-
-// A interface para os dados do formulário pode ser mais simples
-interface ClienteFormData {
-  nome: string;
-  cpf: string;
-  // Adicione outros campos do endereço se a edição for necessária
-}
+import type { Cliente, ClienteRequest } from "../../services/apiService";
 
 function DetalhesCliente() {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +11,6 @@ function DetalhesCliente() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState<ClienteFormData | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -29,7 +21,6 @@ function DetalhesCliente() {
         setError("");
         const data = await getClienteById(parseInt(id));
         setCliente(data);
-        setFormData({ nome: data.nome, cpf: data.cpf }); // Popula o formulário
       } catch (err) {
         setError("Falha ao carregar os dados do cliente.");
         console.error(err);
@@ -43,11 +34,20 @@ function DetalhesCliente() {
 
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!formData || !id) return;
+    if (!cliente || !id) return;
 
-    // Recria o objeto completo para a API, assumindo que o endereço não muda
-    const clienteData = { ...cliente, ...formData } as Cliente & {
-      endereco: Endereco;
+    const clienteData: ClienteRequest = {
+      nome: cliente.nome,
+      cpf: cliente.cpf,
+      endereco: {
+        rua: cliente.endereco.rua,
+        numero: cliente.endereco.numero,
+        complemento: cliente.endereco.complemento,
+        bairro: cliente.endereco.bairro,
+        cidade: cliente.endereco.cidade,
+        estado: cliente.endereco.estado,
+        cep: cliente.endereco.cep,
+      },
     };
 
     try {
@@ -62,7 +62,22 @@ function DetalhesCliente() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => (prev ? { ...prev, [name]: value } : null));
+    setCliente((prev) => (prev ? { ...prev, [name]: value } : null));
+  };
+
+  const handleEnderecoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCliente((prev) =>
+      prev
+        ? {
+            ...prev,
+            endereco: {
+              ...prev.endereco,
+              [name]: value,
+            },
+          }
+        : null
+    );
   };
 
   if (loading)
@@ -93,23 +108,19 @@ function DetalhesCliente() {
             <button
               onClick={() => {
                 setEditMode(!editMode);
-                if (cliente) {
-                  // Reseta o form ao cancelar
-                  setFormData({ nome: cliente.nome, cpf: cliente.cpf });
-                }
               }}
             >
               {editMode ? "Cancelar" : "Editar"}
             </button>
           </div>
           <div className="detalhes-body">
-            {editMode && formData ? (
+            {editMode ? (
               <form onSubmit={handleUpdate}>
                 <div className="detalhes-campo">
                   <label>Nome</label>
                   <input
                     name="nome"
-                    value={formData.nome}
+                    value={cliente.nome}
                     onChange={handleChange}
                   />
                 </div>
@@ -117,8 +128,56 @@ function DetalhesCliente() {
                   <label>CPF</label>
                   <input
                     name="cpf"
-                    value={formData.cpf}
+                    value={cliente.cpf}
                     onChange={handleChange}
+                  />
+                </div>
+                <div className="detalhes-campo">
+                  <label>Rua</label>
+                  <input
+                    name="rua"
+                    value={cliente.endereco.rua}
+                    onChange={handleEnderecoChange}
+                  />
+                </div>
+                <div className="detalhes-campo">
+                  <label>Número</label>
+                  <input
+                    name="numero"
+                    value={cliente.endereco.numero}
+                    onChange={handleEnderecoChange}
+                  />
+                </div>
+                <div className="detalhes-campo">
+                  <label>Bairro</label>
+                  <input
+                    name="bairro"
+                    value={cliente.endereco.bairro}
+                    onChange={handleEnderecoChange}
+                  />
+                </div>
+                <div className="detalhes-campo">
+                  <label>Cidade</label>
+                  <input
+                    name="cidade"
+                    value={cliente.endereco.cidade}
+                    onChange={handleEnderecoChange}
+                  />
+                </div>
+                <div className="detalhes-campo">
+                  <label>Estado</label>
+                  <input
+                    name="estado"
+                    value={cliente.endereco.estado}
+                    onChange={handleEnderecoChange}
+                  />
+                </div>
+                <div className="detalhes-campo">
+                  <label>CEP</label>
+                  <input
+                    name="cep"
+                    value={cliente.endereco.cep}
+                    onChange={handleEnderecoChange}
                   />
                 </div>
                 <div className="detalhes-actions">
@@ -134,6 +193,12 @@ function DetalhesCliente() {
                 <div className="detalhes-campo">
                   <label>CPF</label>
                   <span>{cliente.cpf}</span>
+                </div>
+                <div className="detalhes-campo">
+                  <label>Endereço</label>
+                  <span>
+                    {`${cliente.endereco.rua}, ${cliente.endereco.numero} - ${cliente.endereco.bairro}, ${cliente.endereco.cidade} - ${cliente.endereco.estado}, ${cliente.endereco.cep}`}
+                  </span>
                 </div>
               </>
             )}

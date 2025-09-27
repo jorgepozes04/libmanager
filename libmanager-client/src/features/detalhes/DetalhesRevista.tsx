@@ -3,9 +3,7 @@ import { useParams } from "react-router-dom";
 import { getRevistaById, updateRevista } from "../../services/apiService";
 import Page from "../../components/common/Page";
 import "./Detalhes.css";
-import type { Revista } from "../../services/apiService";
-
-type RevistaFormData = Omit<Revista, "id">;
+import type { Revista, RevistaRequest } from "../../services/apiService";
 
 function DetalhesRevista() {
   const { id } = useParams<{ id: string }>();
@@ -13,7 +11,6 @@ function DetalhesRevista() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState<RevistaFormData | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -24,7 +21,6 @@ function DetalhesRevista() {
         setError("");
         const data = await getRevistaById(parseInt(id));
         setRevista(data);
-        setFormData(data);
       } catch (err) {
         setError("Falha ao carregar os dados da revista.");
         console.error(err);
@@ -38,9 +34,18 @@ function DetalhesRevista() {
 
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!formData || !id) return;
+    if (!revista || !id) return;
+
+    const revistaData: RevistaRequest = {
+      titulo: revista.titulo,
+      editora: revista.editora,
+      mesPublicacao: revista.mesPublicacao,
+      anoPublicacao: revista.anoPublicacao,
+      quantDisponivel: revista.quantDisponivel,
+    };
+
     try {
-      const updatedRevista = await updateRevista(parseInt(id), formData);
+      const updatedRevista = await updateRevista(parseInt(id), revistaData);
       setRevista(updatedRevista);
       setEditMode(false);
     } catch (err) {
@@ -56,8 +61,10 @@ function DetalhesRevista() {
       "anoPublicacao",
       "quantDisponivel",
     ].includes(name);
-    setFormData((prev) =>
-      prev ? { ...prev, [name]: isNumberField ? parseInt(value) : value } : null
+    setRevista((prev) =>
+      prev
+        ? { ...prev, [name]: isNumberField ? parseInt(value) || 0 : value }
+        : null
     );
   };
 
@@ -89,22 +96,19 @@ function DetalhesRevista() {
             <button
               onClick={() => {
                 setEditMode(!editMode);
-                if (revista) {
-                  setFormData(revista);
-                }
               }}
             >
               {editMode ? "Cancelar" : "Editar"}
             </button>
           </div>
           <div className="detalhes-body">
-            {editMode && formData ? (
+            {editMode ? (
               <form onSubmit={handleUpdate}>
                 <div className="detalhes-campo">
                   <label>Título</label>
                   <input
                     name="titulo"
-                    value={formData.titulo}
+                    value={revista.titulo}
                     onChange={handleChange}
                   />
                 </div>
@@ -112,7 +116,7 @@ function DetalhesRevista() {
                   <label>Editora</label>
                   <input
                     name="editora"
-                    value={formData.editora}
+                    value={revista.editora}
                     onChange={handleChange}
                   />
                 </div>
@@ -121,7 +125,7 @@ function DetalhesRevista() {
                   <input
                     type="number"
                     name="mesPublicacao"
-                    value={formData.mesPublicacao}
+                    value={revista.mesPublicacao}
                     onChange={handleChange}
                   />
                 </div>
@@ -130,7 +134,7 @@ function DetalhesRevista() {
                   <input
                     type="number"
                     name="anoPublicacao"
-                    value={formData.anoPublicacao}
+                    value={revista.anoPublicacao}
                     onChange={handleChange}
                   />
                 </div>
@@ -139,7 +143,7 @@ function DetalhesRevista() {
                   <input
                     type="number"
                     name="quantDisponivel"
-                    value={formData.quantDisponivel}
+                    value={revista.quantDisponivel}
                     onChange={handleChange}
                   />
                 </div>

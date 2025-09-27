@@ -1,8 +1,8 @@
 package com.libmanager.libmanager.controller;
 
-import com.libmanager.libmanager.domain.model.Cliente;
 import com.libmanager.libmanager.domain.model.Livro;
 import com.libmanager.libmanager.domain.model.Revista;
+import com.libmanager.libmanager.dto.ClienteResponseDTO;
 import com.libmanager.libmanager.service.ConsultaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class ConsultaController {
     }
 
     @GetMapping("/clientes")
-    public ResponseEntity<List<Cliente>> consultarClientes(
+    public ResponseEntity<List<ClienteResponseDTO>> consultarClientes(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String cpf) {
         return ResponseEntity.ok(consultaService.consultarClientes(nome, cpf));
@@ -54,7 +54,7 @@ public class ConsultaController {
     }
 
     @GetMapping("/clientes/{id}")
-    public ResponseEntity<Cliente> getClienteById(@PathVariable Long id) {
+    public ResponseEntity<ClienteResponseDTO> getClienteById(@PathVariable Long id) {
         return ResponseEntity.ok(consultaService.findClienteById(id));
     }
 }

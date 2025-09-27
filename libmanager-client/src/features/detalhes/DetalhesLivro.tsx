@@ -3,10 +3,7 @@ import { useParams } from "react-router-dom";
 import { getLivroById, updateLivro } from "../../services/apiService";
 import Page from "../../components/common/Page";
 import "./Detalhes.css";
-import type { Livro } from "../../services/apiService";
-
-// Esta interface já corresponde ao que a API espera para o update
-type LivroFormData = Omit<Livro, "id">;
+import type { Livro, LivroRequest } from "../../services/apiService";
 
 function DetalhesLivro() {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +11,6 @@ function DetalhesLivro() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState<LivroFormData | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -25,7 +21,6 @@ function DetalhesLivro() {
         setError("");
         const data = await getLivroById(parseInt(id));
         setLivro(data);
-        setFormData(data);
       } catch (err) {
         setError("Falha ao carregar os dados do livro.");
         console.error(err);
@@ -39,10 +34,16 @@ function DetalhesLivro() {
 
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!formData || !id) return;
+    if (!livro || !id) return;
+
+    const livroData: LivroRequest = {
+      titulo: livro.titulo,
+      autor: livro.autor,
+      quantDisponivel: livro.quantDisponivel,
+    };
 
     try {
-      const updatedLivro = await updateLivro(parseInt(id), formData);
+      const updatedLivro = await updateLivro(parseInt(id), livroData);
       setLivro(updatedLivro);
       setEditMode(false);
     } catch (err) {
@@ -53,11 +54,11 @@ function DetalhesLivro() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) =>
+    setLivro((prev) =>
       prev
         ? {
             ...prev,
-            [name]: name === "quantDisponivel" ? parseInt(value) : value,
+            [name]: name === "quantDisponivel" ? parseInt(value) || 0 : value,
           }
         : null
     );
@@ -91,22 +92,19 @@ function DetalhesLivro() {
             <button
               onClick={() => {
                 setEditMode(!editMode);
-                if (livro) {
-                  setFormData(livro);
-                }
               }}
             >
               {editMode ? "Cancelar" : "Editar"}
             </button>
           </div>
           <div className="detalhes-body">
-            {editMode && formData ? (
+            {editMode ? (
               <form onSubmit={handleUpdate}>
                 <div className="detalhes-campo">
                   <label>Título</label>
                   <input
                     name="titulo"
-                    value={formData.titulo}
+                    value={livro.titulo}
                     onChange={handleChange}
                   />
                 </div>
@@ -114,7 +112,7 @@ function DetalhesLivro() {
                   <label>Autor</label>
                   <input
                     name="autor"
-                    value={formData.autor}
+                    value={livro.autor}
                     onChange={handleChange}
                   />
                 </div>
@@ -123,7 +121,7 @@ function DetalhesLivro() {
                   <input
                     type="number"
                     name="quantDisponivel"
-                    value={formData.quantDisponivel}
+                    value={livro.quantDisponivel}
                     onChange={handleChange}
                   />
                 </div>

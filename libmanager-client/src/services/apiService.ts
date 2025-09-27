@@ -73,6 +73,7 @@ export interface Cliente {
   id: number;
   nome: string;
   cpf: string;
+  endereco: Endereco; // Adicionar esta linha
 }
 
 export interface RevistaRequest {
