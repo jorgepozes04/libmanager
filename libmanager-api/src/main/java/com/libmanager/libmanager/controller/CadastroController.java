@@ -48,4 +48,22 @@ public class CadastroController {
         Revista novaRevista = cadastroService.cadastrarRevista(revistaDTO);
         return ResponseEntity.status(201).body(novaRevista);
     }
+
+    @PutMapping("/clientes/{id}")
+    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
+        Cliente clienteAtualizado = cadastroService.atualizarCliente(id, clienteDTO);
+        return ResponseEntity.ok(clienteAtualizado);
+    }
+
+    @PutMapping("/livros/{id}")
+    public ResponseEntity<Livro> atualizarLivro(@PathVariable Long id, @RequestBody LivroDTO livroDTO) {
+        Livro livroAtualizado = cadastroService.atualizarLivro(id, livroDTO);
+        return ResponseEntity.ok(livroAtualizado);
+    }
+
+    @PutMapping("/revistas/{id}")
+    public ResponseEntity<Revista> atualizarRevista(@PathVariable Long id, @RequestBody RevistaDTO revistaDTO) {
+        Revista revistaAtualizada = cadastroService.atualizarRevista(id, revistaDTO);
+        return ResponseEntity.ok(revistaAtualizada);
+    }
 }

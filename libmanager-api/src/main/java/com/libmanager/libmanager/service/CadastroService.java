@@ -93,4 +93,31 @@ public class CadastroService {
         novaRevista.setQuantDisponivel(revistaDTO.getQuantDisponivel());
         return revistaRepository.save(novaRevista);
     }
+
+    @Transactional
+    public Cliente atualizarCliente(Long id, ClienteDTO clienteDTO) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+        cliente.setNome(clienteDTO.getNome());
+        cliente.setCpf(clienteDTO.getCpf());
+        // Lógica para atualizar o endereço
+        return clienteRepository.save(cliente);
+    }
+
+    public Livro atualizarLivro(Long id, LivroDTO livroDTO) {
+        Livro livro = livroRepository.findById(id).orElseThrow(() -> new RuntimeException("Livro não encontrado."));
+        livro.setTitulo(livroDTO.getTitulo());
+        livro.setAutor(livroDTO.getAutor());
+        livro.setQuantDisponivel(livroDTO.getQuantDisponivel());
+        return livroRepository.save(livro);
+    }
+
+    public Revista atualizarRevista(Long id, RevistaDTO revistaDTO) {
+        Revista revista = revistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Revista não encontrada."));
+        revista.setTitulo(revistaDTO.getTitulo());
+        revista.setEditora(revistaDTO.getEditora());
+        revista.setMesPublicacao(revistaDTO.getMesPublicacao());
+        revista.setAnoPublicacao(revistaDTO.getAnoPublicacao());
+        revista.setQuantDisponivel(revistaDTO.getQuantDisponivel());
+        return revistaRepository.save(revista);
+    }
 }

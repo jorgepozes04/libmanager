@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importe o useNavigate
 import {
   searchClientes,
   searchLivros,
@@ -9,6 +10,7 @@ import {
 } from "../../services/apiService";
 import "./Consultas.css";
 import Page from "../../components/common/Page";
+
 type Categoria = "clientes" | "livros" | "revistas";
 
 function Consultas() {
@@ -17,6 +19,7 @@ function Consultas() {
   const [resultados, setResutados] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
+  const navigate = useNavigate(); // Crie uma instância do navigate
 
   const handleBusca = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +46,10 @@ function Consultas() {
     }
   };
 
+  const handleRowClick = (id: number) => {
+    navigate(`/${categoriaAtiva}/${id}`);
+  };
+
   const renderTabelaResultados = () => {
     if (loading) return <p>Buscando...</p>;
     if (erro) return <p className="mensagem-erro">{erro}</p>;
@@ -60,7 +67,11 @@ function Consultas() {
           </thead>
           <tbody>
             {resultados.map((cliente: Cliente) => (
-              <tr key={cliente.id}>
+              <tr
+                key={cliente.id}
+                onClick={() => handleRowClick(cliente.id)}
+                style={{ cursor: "pointer" }}
+              >
                 <td>{cliente.id}</td>
                 <td>{cliente.nome}</td>
                 <td>{cliente.cpf}</td>
@@ -84,7 +95,11 @@ function Consultas() {
           </thead>
           <tbody>
             {resultados.map((livro: Livro) => (
-              <tr key={livro.id}>
+              <tr
+                key={livro.id}
+                onClick={() => handleRowClick(livro.id)}
+                style={{ cursor: "pointer" }}
+              >
                 <td>{livro.id}</td>
                 <td>{livro.titulo}</td>
                 <td>{livro.autor}</td>
@@ -110,7 +125,11 @@ function Consultas() {
           </thead>
           <tbody>
             {resultados.map((revista: Revista) => (
-              <tr key={revista.id}>
+              <tr
+                key={revista.id}
+                onClick={() => handleRowClick(revista.id)}
+                style={{ cursor: "pointer" }}
+              >
                 <td>{revista.id}</td>
                 <td>{revista.titulo}</td>
                 <td>{revista.editora}</td>

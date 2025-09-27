@@ -42,4 +42,19 @@ public class ConsultaController {
             @RequestParam(required = false) String cpf) {
         return ResponseEntity.ok(consultaService.consultarClientes(nome, cpf));
     }
+
+    @GetMapping("/livros/{id}")
+    public ResponseEntity<Livro> getLivroById(@PathVariable Long id) {
+        return ResponseEntity.ok(consultaService.findLivroById(id));
+    }
+
+    @GetMapping("/revistas/{id}")
+    public ResponseEntity<Revista> getRevistaById(@PathVariable Long id) {
+        return ResponseEntity.ok(consultaService.findRevistaById(id));
+    }
+
+    @GetMapping("/clientes/{id}")
+    public ResponseEntity<Cliente> getClienteById(@PathVariable Long id) {
+        return ResponseEntity.ok(consultaService.findClienteById(id));
+    }
 }

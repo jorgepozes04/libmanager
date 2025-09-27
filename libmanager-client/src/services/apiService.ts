@@ -19,19 +19,19 @@ axios.interceptors.request.use(
 // --- Interfaces ---
 
 // Para realizar empréstimo
-interface EmprestimoRequest {
+export interface EmprestimoRequest {
   idLivro: number;
   idCliente: number;
   idUsuario: number;
 }
 
 // Para realizar login
-interface LoginRequest {
+export interface LoginRequest {
   username?: string;
   password?: string;
 }
 
-interface Endereco {
+export interface Endereco {
   rua: string;
   numero: string;
   complemento: string;
@@ -41,19 +41,19 @@ interface Endereco {
   cep: string;
 }
 
-interface ClienteRequest {
+export interface ClienteRequest {
   nome: string;
   cpf: string;
   endereco: Endereco;
 }
 
-interface LivroRequest {
+export interface LivroRequest {
   titulo: string;
   autor: string;
   quantDisponivel: number;
 }
 
-interface Publicacao {
+export interface Publicacao {
   id: number;
   titulo: string;
   quantDisponivel: number;
@@ -75,7 +75,7 @@ export interface Cliente {
   cpf: string;
 }
 
-interface RevistaRequest {
+export interface RevistaRequest {
   titulo: string;
   editora: string;
   mesPublicacao: number;
@@ -106,7 +106,7 @@ export interface Usuario {
 }
 
 // Usado para criar um novo usuário
-interface UsuarioRequest {
+export interface UsuarioRequest {
   nome: string;
   cpf: string;
   nomeUsuario: string;
@@ -283,4 +283,34 @@ export const criarUsuario = async (data: UsuarioRequest) => {
     }
     throw new Error("Falha na comunicação com o servidor.");
   }
+};
+
+export const getClienteById = async (id: number) => {
+  const response = await axios.get(`${API_URL}/consultas/clientes/${id}`);
+  return response.data;
+};
+
+export const getLivroById = async (id: number) => {
+  const response = await axios.get(`${API_URL}/consultas/livros/${id}`);
+  return response.data;
+};
+
+export const getRevistaById = async (id: number) => {
+  const response = await axios.get(`${API_URL}/consultas/revistas/${id}`);
+  return response.data;
+};
+
+export const updateCliente = async (id: number, data: ClienteRequest) => {
+  const response = await axios.put(`${API_URL}/cadastros/clientes/${id}`, data);
+  return response.data;
+};
+
+export const updateLivro = async (id: number, data: LivroRequest) => {
+  const response = await axios.put(`${API_URL}/cadastros/livros/${id}`, data);
+  return response.data;
+};
+
+export const updateRevista = async (id: number, data: RevistaRequest) => {
+  const response = await axios.put(`${API_URL}/cadastros/revistas/${id}`, data);
+  return response.data;
 };

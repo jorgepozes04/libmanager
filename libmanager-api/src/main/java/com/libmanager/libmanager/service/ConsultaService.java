@@ -50,6 +50,18 @@ public class ConsultaService {
         }
         return clienteRepository.findAll();
     }
+
+    public Livro findLivroById(Long id) {
+        return livroRepository.findById(id).orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+    }
+
+    public Revista findRevistaById(Long id) {
+        return revistaRepository.findById(id).orElseThrow(() -> new RuntimeException("Revista não encontrada"));
+    }
+
+    public Cliente findClienteById(Long id) {
+        return clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+    }
 }
 
 
