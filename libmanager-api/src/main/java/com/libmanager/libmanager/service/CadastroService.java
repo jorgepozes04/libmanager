@@ -94,14 +94,30 @@ public class CadastroService {
         return revistaRepository.save(novaRevista);
     }
 
-    @Transactional
-    public Cliente atualizarCliente(Long id, ClienteDTO clienteDTO) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-        cliente.setNome(clienteDTO.getNome());
-        cliente.setCpf(clienteDTO.getCpf());
-        // Lógica para atualizar o endereço
-        return clienteRepository.save(cliente);
+   @Transactional
+public Cliente atualizarCliente(Long id, ClienteDTO clienteDTO) {
+    Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+    cliente.setNome(clienteDTO.getNome());
+    cliente.setCpf(clienteDTO.getCpf());
+
+    // Lógica para atualizar o endereço
+    if (clienteDTO.getEndereco() != null) {
+        Endereco endereco = cliente.getEndereco();
+        if (endereco == null) {
+            endereco = new Endereco();
+            cliente.setEndereco(endereco);
+        }
+        endereco.setRua(clienteDTO.getEndereco().getRua());
+        endereco.setNumero(clienteDTO.getEndereco().getNumero());
+        endereco.setComplemento(clienteDTO.getEndereco().getComplemento());
+        endereco.setBairro(clienteDTO.getEndereco().getBairro());
+        endereco.setCidade(clienteDTO.getEndereco().getCidade());
+        endereco.setEstado(clienteDTO.getEndereco().getEstado());
+        endereco.setCep(clienteDTO.getEndereco().getCep());
     }
+
+    return clienteRepository.save(cliente);
+}
 
     public Livro atualizarLivro(Long id, LivroDTO livroDTO) {
         Livro livro = livroRepository.findById(id).orElseThrow(() -> new RuntimeException("Livro não encontrado."));
@@ -120,4 +136,6 @@ public class CadastroService {
         revista.setQuantDisponivel(revistaDTO.getQuantDisponivel());
         return revistaRepository.save(revista);
     }
+
+    
 }

@@ -1,7 +1,13 @@
+.consultas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Estilos das Abas */
 .tabs-container {
   display: flex;
   border-bottom: 2px solid #eee;
-  margin-bottom: 1.5rem;
 }
 
 .tabs-container button {
@@ -14,6 +20,7 @@
   color: #888;
   border-bottom: 3px solid transparent;
   transition: all 0.2s ease;
+  margin-bottom: -2px; /* Alinha com a borda inferior */
 }
 
 .tabs-container button:hover {
@@ -26,41 +33,81 @@
   border-bottom-color: var(--cor-primaria);
 }
 
-.search-container form {
-  display: flex;
-  gap: 1rem;
-}
-
-.search-container input {
-  flex-grow: 1;
-}
-
-.results-container {
-  margin-top: 2rem;
-}
-
-.results-container table {
+/* Estilos dos Controles de Busca */
+.search-controls {
   width: 100%;
-  border-collapse: collapse;
 }
 
-.results-container th,
-.results-container td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.search-input {
+  width: 100%;
+  font-size: 1.2rem;
+  padding: 16px 24px; /* Aumenta o padding para um visual mais moderno */
 }
 
-.results-container th {
+/* Container dos Resultados */
+.results-container {
+  margin-top: 1rem;
+}
+
+/* Grid para os Cards */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Estilo de cada Card */
+.result-card {
   background-color: #f9f9f9;
-  font-weight: 600;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.results-container tr:hover {
-  background-color: #f5f5f5;
+.result-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sombra-caixa);
+}
+
+.result-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--cor-primaria);
+  font-size: 1.25rem;
+}
+
+.result-card p {
+  margin: 0.25rem 0;
+  color: #666;
+  flex-grow: 1; /* Empurra o botão para baixo */
+}
+
+.result-card .disponibilidade {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #1e8e3e;
+  margin-bottom: 1rem;
+}
+
+.result-card button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+/* Mensagens de Feedback */
+.feedback-text {
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  padding: 2rem;
 }
 
 .mensagem-erro {
   color: #d93025;
   font-weight: bold;
+  text-align: center;
 }

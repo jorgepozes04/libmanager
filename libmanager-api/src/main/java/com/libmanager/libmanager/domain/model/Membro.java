@@ -22,7 +22,7 @@ public abstract class Membro {
     @Enumerated(EnumType.STRING)
     private StatusMembro status;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 }

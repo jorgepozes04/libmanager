@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importe o useNavigate
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   searchClientes,
   searchLivros,
@@ -8,7 +8,7 @@ import {
   type Livro,
   type Revista,
 } from "../../services/apiService";
-import "./Consultas.css";
+import "./Consultas.css"; // Usaremos o mesmo arquivo CSS, mas com novo conteúdo
 import Page from "../../components/common/Page";
 
 type Categoria = "clientes" | "livros" | "revistas";
@@ -19,168 +19,157 @@ function Consultas() {
   const [resultados, setResutados] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
-  const navigate = useNavigate(); // Crie uma instância do navigate
+  const navigate = useNavigate();
 
-  const handleBusca = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!termoBusca.trim()) return;
+  // Efeito para buscar dados dinamicamente
+  useEffect(() => {
+    // Se não houver termo de busca, limpa os resultados
+    if (!termoBusca.trim()) {
+      setResutados([]);
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     setErro("");
-    setResutados([]);
 
-    try {
-      let data;
-      if (categoriaAtiva === "clientes") {
-        data = await searchClientes(termoBusca);
-      } else if (categoriaAtiva === "livros") {
-        data = await searchLivros(termoBusca);
-      } else {
-        data = await searchRevistas(termoBusca);
+    // Debounce: Atraso para evitar buscas a cada tecla digitada
+    const timer = setTimeout(async () => {
+      try {
+        let data;
+        if (categoriaAtiva === "clientes") {
+          data = await searchClientes(termoBusca);
+        } else if (categoriaAtiva === "livros") {
+          data = await searchLivros(termoBusca); // O backend já busca por título ou autor
+        } else {
+          data = await searchRevistas(termoBusca);
+        }
+        setResutados(data);
+      } catch (error: any) {
+        setErro(error.message || "Erro ao realizar a busca.");
+        setResutados([]);
+      } finally {
+        setLoading(false);
       }
-      setResutados(data);
-    } catch (error: any) {
-      setErro(error.message || "Erro ao realizar a busca.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    }, 500); // A busca é acionada 500ms após o usuário parar de digitar
+
+    return () => clearTimeout(timer); // Limpa o timer se o usuário continuar digitando
+  }, [termoBusca, categoriaAtiva]);
 
   const handleRowClick = (id: number) => {
     navigate(`/${categoriaAtiva}/${id}`);
   };
 
-  const renderTabelaResultados = () => {
-    if (loading) return <p>Buscando...</p>;
+  const getPlaceholderText = () => {
+    switch (categoriaAtiva) {
+      case "clientes":
+        return "Buscar cliente por nome ou CPF...";
+      case "livros":
+        return "Buscar livro por título ou autor...";
+      case "revistas":
+        return "Buscar revista por título ou editora...";
+      default:
+        return "Buscar...";
+    }
+  };
+
+  const renderResultados = () => {
+    if (loading) return <p className="feedback-text">Buscando...</p>;
     if (erro) return <p className="mensagem-erro">{erro}</p>;
-    if (resultados.length === 0) return <p>Nenhum resultado encontrado.</p>;
-
-    if (categoriaAtiva === "clientes") {
-      return (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>CPF</th>
-            </tr>
-          </thead>
-          <tbody>
-            {resultados.map((cliente: Cliente) => (
-              <tr
-                key={cliente.id}
-                onClick={() => handleRowClick(cliente.id)}
-                style={{ cursor: "pointer" }}
-              >
-                <td>{cliente.id}</td>
-                <td>{cliente.nome}</td>
-                <td>{cliente.cpf}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
+    if (termoBusca.trim() && resultados.length === 0) {
+      return <p className="feedback-text">Nenhum resultado encontrado.</p>;
     }
 
-    if (categoriaAtiva === "livros") {
-      return (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Título</th>
-              <th>Autor</th>
-              <th>Disponíveis</th>
-            </tr>
-          </thead>
-          <tbody>
-            {resultados.map((livro: Livro) => (
-              <tr
-                key={livro.id}
-                onClick={() => handleRowClick(livro.id)}
-                style={{ cursor: "pointer" }}
-              >
-                <td>{livro.id}</td>
-                <td>{livro.titulo}</td>
-                <td>{livro.autor}</td>
-                <td>{livro.quantDisponivel}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-    }
-
-    if (categoriaAtiva === "revistas") {
-      return (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Título</th>
-              <th>Editora</th>
-              <th>Publicação</th>
-              <th>Disponíveis</th>
-            </tr>
-          </thead>
-          <tbody>
-            {resultados.map((revista: Revista) => (
-              <tr
-                key={revista.id}
-                onClick={() => handleRowClick(revista.id)}
-                style={{ cursor: "pointer" }}
-              >
-                <td>{revista.id}</td>
-                <td>{revista.titulo}</td>
-                <td>{revista.editora}</td>
-                <td>{`${revista.mesPublicacao}/${revista.anoPublicacao}`}</td>
-                <td>{revista.quantDisponivel}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-    }
-
-    return null;
+    return (
+      <div className="results-grid">
+        {resultados.map((item) => {
+          if (categoriaAtiva === "clientes") {
+            const cliente = item as Cliente;
+            return (
+              <div key={cliente.id} className="result-card">
+                <h3>{cliente.nome}</h3>
+                <p>CPF: {cliente.cpf}</p>
+                <button onClick={() => handleRowClick(cliente.id)}>
+                  Ver Detalhes
+                </button>
+              </div>
+            );
+          }
+          if (categoriaAtiva === "livros") {
+            const livro = item as Livro;
+            return (
+              <div key={livro.id} className="result-card">
+                <h3>{livro.titulo}</h3>
+                <p>Autor: {livro.autor}</p>
+                <span className="disponibilidade">
+                  {livro.quantDisponivel} disponíveis
+                </span>
+                <button onClick={() => handleRowClick(livro.id)}>
+                  Ver Detalhes
+                </button>
+              </div>
+            );
+          }
+          if (categoriaAtiva === "revistas") {
+            const revista = item as Revista;
+            return (
+              <div key={revista.id} className="result-card">
+                <h3>{revista.titulo}</h3>
+                <p>Editora: {revista.editora}</p>
+                <p>
+                  Publicação: {revista.mesPublicacao}/{revista.anoPublicacao}
+                </p>
+                <span className="disponibilidade">
+                  {revista.quantDisponivel} disponíveis
+                </span>
+                <button onClick={() => handleRowClick(revista.id)}>
+                  Ver Detalhes
+                </button>
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+    );
   };
 
   return (
     <Page title="Realizar Consultas">
-      <div className="tabs-container">
-        <button
-          onClick={() => setCategoriaAtiva("clientes")}
-          className={categoriaAtiva === "clientes" ? "active" : ""}
-        >
-          Clientes
-        </button>
-        <button
-          onClick={() => setCategoriaAtiva("livros")}
-          className={categoriaAtiva === "livros" ? "active" : ""}
-        >
-          Livros
-        </button>
-        <button
-          onClick={() => setCategoriaAtiva("revistas")}
-          className={categoriaAtiva === "revistas" ? "active" : ""}
-        >
-          Revistas
-        </button>
-      </div>
+      <div className="consultas-container">
+        <div className="tabs-container">
+          <button
+            onClick={() => setCategoriaAtiva("clientes")}
+            className={categoriaAtiva === "clientes" ? "active" : ""}
+          >
+            Clientes
+          </button>
+          <button
+            onClick={() => setCategoriaAtiva("livros")}
+            className={categoriaAtiva === "livros" ? "active" : ""}
+          >
+            Livros
+          </button>
+          <button
+            onClick={() => setCategoriaAtiva("revistas")}
+            className={categoriaAtiva === "revistas" ? "active" : ""}
+          >
+            Revistas
+          </button>
+        </div>
 
-      <div className="search-container">
-        <form onSubmit={handleBusca}>
+        <div className="search-controls">
           <input
             type="text"
             value={termoBusca}
             onChange={(e) => setTermoBusca(e.target.value)}
-            placeholder={`Buscar ${categoriaAtiva} por nome/título...`}
+            placeholder={getPlaceholderText()}
+            className="search-input"
           />
-          <button type="submit">Buscar</button>
-        </form>
-      </div>
+        </div>
 
-      <div className="results-container">{renderTabelaResultados()}</div>
+        <div className="results-container">{renderResultados()}</div>
+      </div>
     </Page>
   );
 }
