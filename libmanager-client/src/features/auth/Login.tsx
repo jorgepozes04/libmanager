@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { login, needsSetup, setupAdmin } from "../../services/apiService";
+import { login, needsSetup, setupAdmin } from "../../services/authService";
 import { type User } from "../../types";
 
 import "./Login.css";

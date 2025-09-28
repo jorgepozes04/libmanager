@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { cadastrarCliente } from "../../services/apiService";
+import { cadastrarCliente } from "../../services/clienteService";
 import "./CadastroCliente.css";
 import Page from "../../components/common/Page";
 

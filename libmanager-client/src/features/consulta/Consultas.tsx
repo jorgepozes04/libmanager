@@ -4,10 +4,8 @@ import {
   searchClientes,
   searchLivros,
   searchRevistas,
-  type Cliente,
-  type Livro,
-  type Revista,
-} from "../../services/apiService";
+} from "../../services/consultaService";
+import type { Cliente, Livro, Revista } from "../../types/api";
 import "./Consultas.css";
 import Page from "../../components/common/Page";
 

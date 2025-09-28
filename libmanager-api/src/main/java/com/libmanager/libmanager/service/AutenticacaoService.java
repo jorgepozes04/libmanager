@@ -42,13 +42,13 @@ public class AutenticacaoService {
         throw new RuntimeException("Usuário ou senha inválidos.");
     }
 
-    public boolean needsSetup() {
+    public boolean needsSetup() { // Verificar necessidade de criação do usuário admin
         // Retorna true se não houver NENHUM usuário no banco
         return usuarioRepository.count() == 0;
     }
 
     @Transactional
-    public void setupAdmin(SetupRequestDTO setupRequest) {
+    public void setupAdmin(SetupRequestDTO setupRequest) { // Criação do usuário admin
         // Dupla verificação para evitar que seja executado mais de uma vez
         if (usuarioRepository.count() > 0) {
             throw new RuntimeException("O sistema já foi configurado.");

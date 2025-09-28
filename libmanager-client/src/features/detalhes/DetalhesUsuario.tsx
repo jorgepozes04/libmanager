@@ -3,10 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   getUsuarioById,
   updateUsuario,
-  deleteUsuario, // Importe a nova função
-  type UsuarioRequest,
-  type UsuarioDetalhes,
-} from "../../services/apiService";
+  deleteUsuario,
+} from "../../services/adminService";
+import type { UsuarioRequest, UsuarioDetalhes } from "../../types/api";
 import Page from "../../components/common/Page";
 import "../detalhes/Detalhes.css"; // Reutilizando o CSS
 

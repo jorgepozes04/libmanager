@@ -37,7 +37,6 @@ public class AdminService {
                 )).collect(Collectors.toList());
     }
 
-    // CORREÇÃO: Este método agora retorna o DTO com todos os detalhes.
     public UsuarioDetalhesDTO findUsuarioById(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
@@ -98,7 +97,7 @@ public class AdminService {
     }
 
     Usuario usuarioSalvo = usuarioRepository.save(usuario);
-    return toUsuarioDetalhesDTO(usuarioSalvo); // Converte para o DTO correto
+    return toUsuarioDetalhesDTO(usuarioSalvo);
 }
 
     private UsuarioDetalhesDTO toUsuarioDetalhesDTO(Usuario usuario) {
@@ -126,7 +125,7 @@ public class AdminService {
 
     @Transactional
 public void deletarUsuario(Long idParaDeletar, String senhaAdmin) {
-    // 1. Pega o usuário administrador que está logado
+    // Pega o usuário administrador que está logado
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     if (!(principal instanceof Usuario)) {
@@ -135,17 +134,17 @@ public void deletarUsuario(Long idParaDeletar, String senhaAdmin) {
     }
     Usuario admin = (Usuario) principal;
 
-    // 2. Verifica se a senha do admin fornecida está correta
+    // Verifica se a senha do admin fornecida está correta
     if (!passwordEncoder.matches(senhaAdmin, admin.getSenha())) {
         throw new RuntimeException("Senha do administrador incorreta.");
     }
 
-    // 3. Impede que o admin delete a própria conta
+    // Impede que o admin delete a própria conta
     if (admin.getId().equals(idParaDeletar)) {
         throw new RuntimeException("Não é possível remover o próprio usuário administrador.");
     }
 
-    // 4. Deleta o usuário pelo ID, se ele existir
+    // Deleta o usuário pelo ID, se ele existir
     if (!usuarioRepository.existsById(idParaDeletar)) {
         throw new RuntimeException("Usuário a ser deletado não encontrado.");
     }

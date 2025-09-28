@@ -21,7 +21,7 @@ import GerenciarUsuarios from "./features/admin/GerenciarUsuarios";
 import DetalhesCliente from "./features/detalhes/DetalhesCliente";
 import DetalhesLivro from "./features/detalhes/DetalhesLivro";
 import DetalhesRevista from "./features/detalhes/DetalhesRevista";
-import DetalhesUsuario from "./features/admin/DetalhesUsuario";
+import DetalhesUsuario from "./features/detalhes/DetalhesUsuario";
 import GerenciarClientes from "./features/gerenciamento/GerenciarClientes"; // IMPORTAR
 
 function App() {

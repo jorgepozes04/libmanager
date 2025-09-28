@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getClienteById, updateCliente } from "../../services/apiService";
+import { getClienteById, updateCliente } from "../../services/clienteService";
 import Page from "../../components/common/Page";
 import "./Detalhes.css";
-import type { Cliente, ClienteRequest } from "../../services/apiService";
+import type { Cliente, ClienteRequest } from "../../types/api";
 
 function DetalhesCliente() {
   const { id } = useParams<{ id: string }>();

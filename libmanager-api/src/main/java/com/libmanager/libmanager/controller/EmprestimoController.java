@@ -20,15 +20,15 @@ public class EmprestimoController {
         this.emprestimoService = emprestimoService;
     }
 
-    // 3. Mapeia requisições HTTP POST para a URL /api/emprestimos
+    // Mapeia requisições HTTP POST para a URL /api/emprestimos
     @PostMapping
-    public ResponseEntity<Emprestimo> realizarEmprestimo(@RequestBody EmprestimoRequestDTO requestDTO) { // 4
+    public ResponseEntity<Emprestimo> realizarEmprestimo(@RequestBody EmprestimoRequestDTO requestDTO) {
         try {
             Emprestimo novoEmprestimo = emprestimoService.realizarEmprestimo(requestDTO);
-            // 5. Retorna uma resposta HTTP 201 Created com o objeto criado no corpo
+            // Retorna uma resposta HTTP 201 Created com o objeto criado no corpo
             return ResponseEntity.status(201).body(novoEmprestimo);
         } catch (RuntimeException e) {
-            // 6. Em caso de erro (ex: cliente inativo), retorna uma resposta HTTP 400 Bad Request com a mensagem de erro
+            // Em caso de erro (ex: cliente inativo), retorna uma resposta HTTP 400 Bad Request com a mensagem de erro
             return ResponseEntity.badRequest().body(null);
         }
     }

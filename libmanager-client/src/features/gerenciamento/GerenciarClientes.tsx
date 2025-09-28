@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  searchClientes,
-  deleteCliente,
-  type Cliente,
-} from "../../services/apiService";
+import { searchClientes } from "../../services/consultaService";
+import { deleteCliente } from "../../services/clienteService";
+import type { Cliente } from "../../types/api";
 import Page from "../../components/common/Page";
-import "../consulta/Consultas.css"; // Reutilizando o CSS de Consultas
+import "../consulta/Consultas.css";
 
 function GerenciarClientes() {
   const [termoBusca, setTermoBusca] = useState("");

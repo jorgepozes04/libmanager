@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  listarUsuarios,
-  criarUsuario,
-  type Usuario,
-} from "../../services/apiService";
+import { listarUsuarios, criarUsuario } from "../../services/adminService";
+import type { Usuario } from "../../types/api";
 import "./GerenciarUsuarios.css";
 import Page from "../../components/common/Page";
 

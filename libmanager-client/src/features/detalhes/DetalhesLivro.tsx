@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getLivroById, updateLivro } from "../../services/apiService";
+import { getLivroById, updateLivro } from "../../services/publicacaoService";
 import Page from "../../components/common/Page";
 import "./Detalhes.css";
-import type { Livro, LivroRequest } from "../../services/apiService";
+import type { Livro, LivroRequest } from "../../types/api";
 
 function DetalhesLivro() {
   const { id } = useParams<{ id: string }>();

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { cadastrarLivro } from "../../services/apiService";
+import { cadastrarLivro } from "../../services/publicacaoService";
 import "./CadastroLivro.css";
 import Page from "../../components/common/Page";
 

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getRevistaById, updateRevista } from "../../services/apiService";
+import {
+  getRevistaById,
+  updateRevista,
+} from "../../services/publicacaoService";
 import Page from "../../components/common/Page";
 import "./Detalhes.css";
-import type { Revista, RevistaRequest } from "../../services/apiService";
+import type { Revista, RevistaRequest } from "../../types/api";
 
 function DetalhesRevista() {
   const { id } = useParams<{ id: string }>();

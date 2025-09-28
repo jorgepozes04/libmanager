@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import { searchClientes } from "../../services/consultaService";
 import {
-  searchClientes,
   buscarEmprestimoAtivo,
   realizarDevolucao,
-  type Cliente,
-  type Emprestimo,
-  type DevolucaoResponse,
-} from "../../services/apiService";
+} from "../../services/emprestimoService";
+import type { Cliente, Emprestimo, DevolucaoResponse } from "../../types/api";
 import "./RealizarDevolucao.css";
 import Page from "../../components/common/Page";
 

@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  realizarEmprestimo,
-  searchClientes,
-  searchLivros,
-} from "../../services/apiService";
+import { realizarEmprestimo } from "../../services/emprestimoService";
+import { searchClientes, searchLivros } from "../../services/consultaService";
 import "./RealizarEmprestimo.css";
 import Page from "../../components/common/Page";
 
