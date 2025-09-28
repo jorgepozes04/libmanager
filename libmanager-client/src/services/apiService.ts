@@ -15,16 +15,7 @@ axios.interceptors.request.use(
   }
 );
 
-export interface EmprestimoRequest {
-  idLivro: number;
-  idCliente: number;
-  idUsuario: number;
-}
-
-export interface LoginRequest {
-  username?: string;
-  password?: string;
-}
+// --- Interfaces ---
 
 export interface Endereco {
   rua: string;
@@ -34,6 +25,17 @@ export interface Endereco {
   cidade: string;
   estado: string;
   cep: string;
+}
+
+export interface EmprestimoRequest {
+  idLivro: number;
+  idCliente: number;
+  idUsuario: number;
+}
+
+export interface LoginRequest {
+  username?: string;
+  password?: string;
 }
 
 export interface ClienteRequest {
@@ -46,6 +48,22 @@ export interface LivroRequest {
   titulo: string;
   autor: string;
   quantDisponivel: number;
+}
+
+export interface RevistaRequest {
+  titulo: string;
+  editora: string;
+  mesPublicacao: number;
+  anoPublicacao: number;
+  quantDisponivel: number;
+}
+
+export interface UsuarioRequest {
+  nome: string;
+  cpf: string;
+  nomeUsuario: string;
+  senha?: string;
+  endereco: Endereco;
 }
 
 export interface Publicacao {
@@ -71,14 +89,6 @@ export interface Cliente {
   endereco: Endereco;
 }
 
-export interface RevistaRequest {
-  titulo: string;
-  editora: string;
-  mesPublicacao: number;
-  anoPublicacao: number;
-  quantDisponivel: number;
-}
-
 export interface Emprestimo {
   id: number;
   dataEmprestimo: string;
@@ -93,6 +103,7 @@ export interface DevolucaoResponse {
   valorMulta: number;
 }
 
+// Interface para a lista de usuários (simplificada)
 export interface Usuario {
   id: number;
   nome: string;
@@ -101,13 +112,18 @@ export interface Usuario {
   status: string;
 }
 
-export interface UsuarioRequest {
+// NOVA interface para os detalhes do usuário (completa)
+export interface UsuarioDetalhes {
+  id: number;
   nome: string;
   cpf: string;
   nomeUsuario: string;
-  senha?: string;
+  cargo: string;
+  status: string;
   endereco: Endereco;
 }
+
+// --- Funções da API ---
 
 export const realizarEmprestimo = async (data: EmprestimoRequest) => {
   try {
@@ -296,6 +312,20 @@ export const updateLivro = async (id: number, data: LivroRequest) => {
 };
 
 export const updateRevista = async (id: number, data: RevistaRequest) => {
-  const response = await axios.put(`${API_URL}/publicacoes/revistas/${id}`, data);
+  const response = await axios.put(
+    `${API_URL}/publicacoes/revistas/${id}`,
+    data
+  );
+  return response.data;
+};
+
+// Função MODIFICADA para retornar o tipo de detalhe correto
+export const getUsuarioById = async (id: number): Promise<UsuarioDetalhes> => {
+  const response = await axios.get(`${API_URL}/admin/usuarios/${id}`);
+  return response.data;
+};
+
+export const updateUsuario = async (id: number, data: UsuarioRequest) => {
+  const response = await axios.put(`${API_URL}/admin/usuarios/${id}`, data);
   return response.data;
 };

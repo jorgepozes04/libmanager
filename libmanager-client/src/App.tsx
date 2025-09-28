@@ -21,6 +21,7 @@ import GerenciarUsuarios from "./features/admin/GerenciarUsuarios";
 import DetalhesCliente from "./features/detalhes/DetalhesCliente";
 import DetalhesLivro from "./features/detalhes/DetalhesLivro";
 import DetalhesRevista from "./features/detalhes/DetalhesRevista";
+import DetalhesUsuario from "./features/admin/DetalhesUsuario";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,7 +37,6 @@ function App() {
     if (token && userDataString) {
       const userData = JSON.parse(userDataString);
       if (!isAuthenticated) {
-        // Evita loop de login
         handleLoginSuccess(userData, false);
       }
     }
@@ -66,7 +66,6 @@ function App() {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-  // Se não estiver autenticado E não houver dados do utilizador, mostra o Login.
   if (!isAuthenticated || !currentUser) {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
@@ -75,7 +74,7 @@ function App() {
     <div className="app-container">
       <Sidebar
         userCargo={currentUser.cargo}
-        currentView={location.pathname} // Usa a localização atual para destacar o item ativo
+        currentView={location.pathname}
         isCollapsed={isSidebarCollapsed}
         toggleSidebar={toggleSidebar}
         onNavigate={handleNavigation}
@@ -107,10 +106,10 @@ function App() {
             <Route path="/cadastroRevista" element={<CadastroRevista />} />
             <Route path="/consultas" element={<Consultas />} />
             <Route path="/gerenciarUsuarios" element={<GerenciarUsuarios />} />
+            <Route path="/admin/usuarios/:id" element={<DetalhesUsuario />} />
             <Route path="/clientes/:id" element={<DetalhesCliente />} />
             <Route path="/livros/:id" element={<DetalhesLivro />} />
             <Route path="/revistas/:id" element={<DetalhesRevista />} />
-            {/* Rota padrão para redirecionar para o dashboard */}
             <Route
               path="*"
               element={
@@ -127,7 +126,6 @@ function App() {
   );
 }
 
-// O AppWrapper continua a ser a melhor forma de fornecer o contexto do Router ao App
 const AppWrapper = () => (
   <Router>
     <App />

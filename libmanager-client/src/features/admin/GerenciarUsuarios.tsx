@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   listarUsuarios,
   criarUsuario,
@@ -25,6 +26,7 @@ function GerenciarUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
+  const navigate = useNavigate();
 
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
@@ -80,6 +82,10 @@ function GerenciarUsuarios() {
     } catch (error: any) {
       setFormErro(error.message);
     }
+  };
+
+  const handleRowClick = (id: number) => {
+    navigate(`/admin/usuarios/${id}`);
   };
 
   if (loading) return <p>Carregando usuários...</p>;
@@ -204,7 +210,11 @@ function GerenciarUsuarios() {
         </thead>
         <tbody>
           {usuarios.map((user) => (
-            <tr key={user.id}>
+            <tr
+              key={user.id}
+              onClick={() => handleRowClick(user.id)}
+              style={{ cursor: "pointer" }}
+            >
               <td>{user.id}</td>
               <td>{user.nome}</td>
               <td>{user.nomeUsuario}</td>
