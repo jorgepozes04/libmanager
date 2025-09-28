@@ -4,27 +4,24 @@
   gap: 1.5rem;
 }
 
-/* Garante que a seção seja um container de bloco simples */
 .form-section {
-  display: flex; /* Garante que não seja grid ou flex */
+  display: flex;
+  flex-direction: column; /* Garante que o título e o conteúdo fiquem em coluna */
   border: 1px solid #f0f0f0;
   border-radius: 8px;
   padding: 2rem;
 }
 
-/* Estiliza o título da seção */
 .form-section h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
   color: var(--cor-primaria);
-  padding: 0;
-  border: none;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #eee;
   display: inline-block;
+  align-self: flex-start; /* Garante que o título não estique */
 }
 
-/* Organiza as linhas de campos */
 .form-section-content {
   display: flex;
   flex-direction: column;
@@ -51,7 +48,8 @@
 }
 
 /* Mensagens de feedback */
-.mensagem-erro, .mensagem-sucesso {
+.mensagem-erro,
+.mensagem-sucesso {
   margin-top: 1.5rem;
   text-align: center;
   font-weight: bold;

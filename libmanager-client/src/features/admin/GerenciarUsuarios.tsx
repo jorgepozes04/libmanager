@@ -98,7 +98,7 @@ function GerenciarUsuarios() {
         <div className="form-container">
           <h2>Novo Usuário</h2>
           <form onSubmit={handleSubmit}>
-            <div className="form-section">
+            <div className="admin-form-section">
               <div className="input-group">
                 <label>Nome Completo</label>
                 <input
@@ -118,7 +118,7 @@ function GerenciarUsuarios() {
                 />
               </div>
             </div>
-            <div className="form-section">
+            <div className="admin-form-section">
               <div className="input-group">
                 <label>Nome de Usuário (login)</label>
                 <input
@@ -139,8 +139,8 @@ function GerenciarUsuarios() {
                 />
               </div>
             </div>
-            <div className="form-section">
-              <label>Endereço</label>
+            <div className="admin-form-section">
+              <h3>Endereço</h3>
               <input
                 name="rua"
                 placeholder="Rua"
