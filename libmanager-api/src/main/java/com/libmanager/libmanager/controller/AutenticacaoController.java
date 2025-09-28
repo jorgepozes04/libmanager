@@ -2,14 +2,18 @@ package com.libmanager.libmanager.controller;
 
 import com.libmanager.libmanager.dto.LoginRequestDTO;
 import com.libmanager.libmanager.dto.LoginResponseDTO;
+import com.libmanager.libmanager.dto.SetupRequestDTO;
 import com.libmanager.libmanager.service.AutenticacaoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/auth") // Usaremos um prefixo "/auth" para autenticação
+@RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AutenticacaoController {
 
@@ -21,7 +25,23 @@ public class AutenticacaoController {
             LoginResponseDTO response = autenticacaoService.login(loginRequest);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(401).body(e.getMessage()); // 401 Unauthorized
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/needs-setup")
+    public ResponseEntity<Map<String, Boolean>> needsSetup() {
+        boolean needsSetup = autenticacaoService.needsSetup();
+        return ResponseEntity.ok(Collections.singletonMap("needsSetup", needsSetup));
+    }
+
+    @PostMapping("/setup")
+    public ResponseEntity<?> setupAdmin(@RequestBody SetupRequestDTO setupRequest) {
+        try {
+            autenticacaoService.setupAdmin(setupRequest);
+            return ResponseEntity.ok(Map.of("message", "Administrador configurado com sucesso!"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

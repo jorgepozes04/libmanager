@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   searchClientes,
   buscarEmprestimoAtivo,
@@ -24,22 +24,40 @@ function RealizarDevolucao() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
 
+  // Novo estado e ref para a busca
+  const [showClienteResults, setShowClienteResults] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  // Efeito para buscar clientes
   useEffect(() => {
-    if (clienteQuery.trim() === "") {
-      setClienteResults([]);
-      return;
-    }
+    if (!showClienteResults) return;
     const timer = setTimeout(async () => {
       const results = await searchClientes(clienteQuery);
       setClienteResults(results);
     }, 300);
     return () => clearTimeout(timer);
-  }, [clienteQuery]);
+  }, [clienteQuery, showClienteResults]);
+
+  // Efeito para fechar a lista ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowClienteResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSelectCliente = async (cliente: Cliente) => {
     setSelectedCliente(cliente);
     setClienteQuery(cliente.nome);
-    setClienteResults([]);
+    setShowClienteResults(false); // Esconde a lista após selecionar
     setErro("");
     setDevolucaoResultado(null);
     setLoading(true);
@@ -81,19 +99,20 @@ function RealizarDevolucao() {
 
   return (
     <Page title="Realizar Devolução">
-      {/* Etapa 1: Buscar Cliente */}
       <div className="form-section">
         <h2>1. Busque o Cliente</h2>
-        <div className="input-group">
+        <div className="input-group" ref={searchRef}>
           <input
             type="text"
             id="clienteQuery"
             value={clienteQuery}
             onChange={(e) => setClienteQuery(e.target.value)}
+            onFocus={() => setShowClienteResults(true)}
             placeholder="Comece a digitar o nome do cliente..."
             disabled={!!selectedCliente}
+            autoComplete="off"
           />
-          {clienteResults.length > 0 && (
+          {showClienteResults && clienteResults.length > 0 && (
             <ul className="search-results">
               {clienteResults.map((cliente) => (
                 <li
@@ -113,7 +132,6 @@ function RealizarDevolucao() {
         )}
       </div>
 
-      {/* Etapa 2: Exibir Empréstimo e Realizar Devolução */}
       {selectedCliente && (
         <div className="form-section">
           <h2>2. Confirme a Devolução</h2>

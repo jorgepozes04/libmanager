@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,32 +74,32 @@ public class AdminService {
         return usuarioRepository.save(novoUsuario);
     }
 
-    @Transactional
-    public Usuario atualizarUsuario(Long id, UsuarioDTO usuarioDTO) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+    public UsuarioDetalhesDTO atualizarUsuario(Long id, UsuarioDTO usuarioDTO) {
+    Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
-        usuario.setNome(usuarioDTO.getNome());
-        usuario.setCpf(usuarioDTO.getCpf());
-        usuario.setNomeUsuario(usuarioDTO.getNomeUsuario());
+    usuario.setNome(usuarioDTO.getNome());
+    usuario.setCpf(usuarioDTO.getCpf());
+    usuario.setNomeUsuario(usuarioDTO.getNomeUsuario());
 
-        if (usuarioDTO.getEndereco() != null) {
-            Endereco endereco = usuario.getEndereco();
-            if (endereco == null) {
-                endereco = new Endereco();
-                usuario.setEndereco(endereco);
-            }
-            endereco.setRua(usuarioDTO.getEndereco().getRua());
-            endereco.setNumero(usuarioDTO.getEndereco().getNumero());
-            endereco.setComplemento(usuarioDTO.getEndereco().getComplemento());
-            endereco.setBairro(usuarioDTO.getEndereco().getBairro());
-            endereco.setCidade(usuarioDTO.getEndereco().getCidade());
-            endereco.setEstado(usuarioDTO.getEndereco().getEstado());
-            endereco.setCep(usuarioDTO.getEndereco().getCep());
+    if (usuarioDTO.getEndereco() != null) {
+        Endereco endereco = usuario.getEndereco();
+        if (endereco == null) {
+            endereco = new Endereco();
+            usuario.setEndereco(endereco);
         }
-
-        return usuarioRepository.save(usuario);
+        endereco.setRua(usuarioDTO.getEndereco().getRua());
+        endereco.setNumero(usuarioDTO.getEndereco().getNumero());
+        endereco.setComplemento(usuarioDTO.getEndereco().getComplemento());
+        endereco.setBairro(usuarioDTO.getEndereco().getBairro());
+        endereco.setCidade(usuarioDTO.getEndereco().getCidade());
+        endereco.setEstado(usuarioDTO.getEndereco().getEstado());
+        endereco.setCep(usuarioDTO.getEndereco().getCep());
     }
+
+    Usuario usuarioSalvo = usuarioRepository.save(usuario);
+    return toUsuarioDetalhesDTO(usuarioSalvo); // Converte para o DTO correto
+}
 
     private UsuarioDetalhesDTO toUsuarioDetalhesDTO(Usuario usuario) {
         UsuarioDetalhesDTO dto = new UsuarioDetalhesDTO();
@@ -123,4 +123,32 @@ public class AdminService {
         }
         return dto;
     }
+
+    @Transactional
+public void deletarUsuario(Long idParaDeletar, String senhaAdmin) {
+    // 1. Pega o usuário administrador que está logado
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    if (!(principal instanceof Usuario)) {
+        // Isso não deve acontecer se o filtro de segurança estiver funcionando
+        throw new RuntimeException("Não foi possível verificar o administrador autenticado.");
+    }
+    Usuario admin = (Usuario) principal;
+
+    // 2. Verifica se a senha do admin fornecida está correta
+    if (!passwordEncoder.matches(senhaAdmin, admin.getSenha())) {
+        throw new RuntimeException("Senha do administrador incorreta.");
+    }
+
+    // 3. Impede que o admin delete a própria conta
+    if (admin.getId().equals(idParaDeletar)) {
+        throw new RuntimeException("Não é possível remover o próprio usuário administrador.");
+    }
+
+    // 4. Deleta o usuário pelo ID, se ele existir
+    if (!usuarioRepository.existsById(idParaDeletar)) {
+        throw new RuntimeException("Usuário a ser deletado não encontrado.");
+    }
+    usuarioRepository.deleteById(idParaDeletar);
+}
 }

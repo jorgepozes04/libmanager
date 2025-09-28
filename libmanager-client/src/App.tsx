@@ -22,6 +22,7 @@ import DetalhesCliente from "./features/detalhes/DetalhesCliente";
 import DetalhesLivro from "./features/detalhes/DetalhesLivro";
 import DetalhesRevista from "./features/detalhes/DetalhesRevista";
 import DetalhesUsuario from "./features/admin/DetalhesUsuario";
+import GerenciarClientes from "./features/gerenciamento/GerenciarClientes"; // IMPORTAR
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -105,6 +106,11 @@ function App() {
             <Route path="/cadastroLivro" element={<CadastroLivro />} />
             <Route path="/cadastroRevista" element={<CadastroRevista />} />
             <Route path="/consultas" element={<Consultas />} />
+            <Route
+              path="/gerenciarClientes"
+              element={<GerenciarClientes />}
+            />{" "}
+            {/* ADICIONAR ROTA */}
             <Route path="/gerenciarUsuarios" element={<GerenciarUsuarios />} />
             <Route path="/admin/usuarios/:id" element={<DetalhesUsuario />} />
             <Route path="/clientes/:id" element={<DetalhesCliente />} />

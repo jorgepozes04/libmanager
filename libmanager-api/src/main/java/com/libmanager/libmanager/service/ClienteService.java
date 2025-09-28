@@ -1,9 +1,11 @@
 package com.libmanager.libmanager.service;
 
+import com.libmanager.libmanager.domain.enums.StatusEmprestimo;
 import com.libmanager.libmanager.domain.enums.StatusMembro;
 import com.libmanager.libmanager.domain.model.Cliente;
 import com.libmanager.libmanager.domain.model.Endereco;
 import com.libmanager.libmanager.domain.repository.ClienteRepository;
+import com.libmanager.libmanager.domain.repository.EmprestimoRepository;
 import com.libmanager.libmanager.dto.ClienteDTO;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final EmprestimoRepository emprestimoRepository;
 
     @Transactional
     public Cliente cadastrarCliente(ClienteDTO clienteDTO) {
@@ -49,6 +52,22 @@ public class ClienteService {
         }
 
         return clienteRepository.save(cliente);
+    }
+
+    @Transactional
+    public void deletarCliente(Long id) {
+        // Verifica se o cliente a ser deletado existe
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+
+        // Verifica se o cliente possui algum empréstimo ativo
+        boolean temEmprestimoAtivo = emprestimoRepository.findByClienteIdAndStatus(id, StatusEmprestimo.ATIVO).isPresent();
+        if (temEmprestimoAtivo) {
+            throw new RuntimeException("Não é possível excluir um cliente que possui um empréstimo ativo.");
+        }
+
+        // Se não houver empréstimos ativos, deleta o cliente
+        clienteRepository.delete(cliente);
     }
 
     private Endereco criarEndereco(ClienteDTO clienteDTO) {

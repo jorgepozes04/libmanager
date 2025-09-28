@@ -1,5 +1,5 @@
 import "./Dashboard.css";
-import Page from "../../components/common/Page"; // Importar o Page
+import Page from "../../components/common/Page";
 
 interface DashboardProps {
   onNavigate: (view: string) => void;
@@ -30,6 +30,14 @@ function Dashboard({ onNavigate, userCargo }: DashboardProps) {
         >
           <h2>Cadastrar Cliente</h2>
           <p>Adicionar um novo cliente ao sistema.</p>
+        </div>
+
+        <div
+          className="dashboard-card"
+          onClick={() => onNavigate("gerenciarClientes")}
+        >
+          <h2>Gerenciar Clientes</h2>
+          <p>Editar ou remover clientes existentes.</p>
         </div>
 
         <div

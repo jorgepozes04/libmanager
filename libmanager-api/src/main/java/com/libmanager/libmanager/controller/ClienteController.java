@@ -30,4 +30,14 @@ public class ClienteController {
         Cliente clienteAtualizado = clienteService.atualizarCliente(id, clienteDTO);
         return ResponseEntity.ok(clienteAtualizado);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarCliente(@PathVariable Long id) {
+        try {
+            clienteService.deletarCliente(id);
+            return ResponseEntity.ok().build(); // Retorna 200 OK (sem corpo) em caso de sucesso
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage()); // Retorna 400 com a mensagem de erro
+        }
+    }
 }

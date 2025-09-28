@@ -1,23 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   getUsuarioById,
   updateUsuario,
+  deleteUsuario, // Importe a nova função
   type UsuarioRequest,
-  type UsuarioDetalhes, // Importe o tipo correto
+  type UsuarioDetalhes,
 } from "../../services/apiService";
 import Page from "../../components/common/Page";
 import "../detalhes/Detalhes.css"; // Reutilizando o CSS
 
 function DetalhesUsuario() {
   const { id } = useParams<{ id: string }>();
-  // Corrija o tipo do estado
+  const navigate = useNavigate(); // Hook para navegar entre páginas
   const [usuario, setUsuario] = useState<UsuarioDetalhes | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [editMode, setEditMode] = useState(false);
 
+  // Estado para armazenar o ID do usuário logado
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
+
   useEffect(() => {
+    // Pega os dados do usuário logado do localStorage
+    const userDataString = localStorage.getItem("userData");
+    if (userDataString) {
+      setLoggedInUserId(JSON.parse(userDataString).id);
+    }
+
     if (!id) return;
 
     const fetchUsuario = async () => {
@@ -25,7 +35,7 @@ function DetalhesUsuario() {
         setLoading(true);
         setError("");
         const data = await getUsuarioById(parseInt(id));
-        setUsuario(data); // Agora os tipos são compatíveis
+        setUsuario(data);
       } catch (err) {
         setError("Falha ao carregar os dados do usuário.");
         console.error(err);
@@ -41,7 +51,6 @@ function DetalhesUsuario() {
     event.preventDefault();
     if (!usuario || !id) return;
 
-    // A requisição usa apenas os campos necessários para a atualização
     const usuarioData: UsuarioRequest = {
       nome: usuario.nome,
       cpf: usuario.cpf,
@@ -86,6 +95,28 @@ function DetalhesUsuario() {
           }
         : null
     );
+  };
+
+  // Nova função para lidar com a exclusão
+  const handleDelete = async () => {
+    if (!usuario) return;
+
+    const password = prompt(
+      "Atenção! Esta ação é irreversível.\n\nPara confirmar a remoção, digite sua senha de administrador:"
+    );
+
+    if (password && password.length > 0) {
+      try {
+        await deleteUsuario(usuario.id, { senha: password });
+        alert("Usuário removido com sucesso!");
+        navigate("/gerenciarUsuarios"); // Redireciona para a lista
+      } catch (err: any) {
+        alert(`Erro: ${err.message}`);
+      }
+    } else if (password !== null) {
+      // Se o usuário clicou OK mas não digitou nada
+      alert("A senha não pode ser vazia.");
+    }
   };
 
   if (loading)
@@ -224,6 +255,42 @@ function DetalhesUsuario() {
                 </div>
               </>
             )}
+          </div>
+        </div>
+
+        {/* Card de "Zona de Perigo" para a exclusão */}
+        <div className="detalhes-card">
+          <div className="detalhes-header">
+            <h2 style={{ color: "#d93025" }}>Zona de Perigo</h2>
+          </div>
+          <div className="detalhes-body">
+            <div className="detalhes-campo">
+              <label>Remover este usuário</label>
+              <span>
+                Uma vez removido, todos os seus dados serão perdidos
+                permanentemente.
+              </span>
+            </div>
+            <div className="detalhes-actions">
+              <button
+                onClick={handleDelete}
+                disabled={usuario.id === loggedInUserId}
+                style={{ backgroundColor: "#d93025", color: "white" }}
+              >
+                Remover Usuário
+              </button>
+              {usuario.id === loggedInUserId && (
+                <p
+                  style={{
+                    color: "#555",
+                    margin: "0 0 0 1rem",
+                    alignSelf: "center",
+                  }}
+                >
+                  Você não pode remover sua própria conta.
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   realizarEmprestimo,
   searchClientes,
@@ -36,29 +36,55 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
   const [mensagem, setMensagem] = useState("");
   const [isError, setIsError] = useState(false);
 
+  // Novos estados para controlar a visibilidade das listas
+  const [showClienteResults, setShowClienteResults] = useState(false);
+  const [showLivroResults, setShowLivroResults] = useState(false);
+
+  // Refs para detectar cliques fora dos campos de busca
+  const clienteSearchRef = useRef<HTMLDivElement>(null);
+  const livroSearchRef = useRef<HTMLDivElement>(null);
+
+  // Efeito para buscar clientes (agora depende de showClienteResults)
   useEffect(() => {
-    if (clienteQuery.trim() === "") {
-      setClienteResults([]);
-      return;
-    }
+    if (!showClienteResults) return;
     const timer = setTimeout(async () => {
       const results = await searchClientes(clienteQuery);
       setClienteResults(results);
     }, 300);
     return () => clearTimeout(timer);
-  }, [clienteQuery]);
+  }, [clienteQuery, showClienteResults]);
 
+  // Efeito para buscar livros (agora depende de showLivroResults)
   useEffect(() => {
-    if (livroQuery.trim() === "") {
-      setLivroResults([]);
-      return;
-    }
+    if (!showLivroResults) return;
     const timer = setTimeout(async () => {
       const results = await searchLivros(livroQuery);
       setLivroResults(results);
     }, 300);
     return () => clearTimeout(timer);
-  }, [livroQuery]);
+  }, [livroQuery, showLivroResults]);
+
+  // Efeito para fechar as listas ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        clienteSearchRef.current &&
+        !clienteSearchRef.current.contains(event.target as Node)
+      ) {
+        setShowClienteResults(false);
+      }
+      if (
+        livroSearchRef.current &&
+        !livroSearchRef.current.contains(event.target as Node)
+      ) {
+        setShowLivroResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -95,24 +121,26 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
       <form onSubmit={handleSubmit} className="emprestimo-form">
         <div className="form-section">
           <h2>1. Selecione o Cliente</h2>
-          <div className="input-group">
+          <div className="input-group" ref={clienteSearchRef}>
             <input
               id="cliente-search"
               type="text"
               value={clienteQuery}
               onChange={(e) => setClienteQuery(e.target.value)}
+              onFocus={() => setShowClienteResults(true)}
               placeholder="Comece a digitar o nome do cliente..."
               disabled={!!selectedCliente}
+              autoComplete="off"
             />
-            {clienteResults.length > 0 && (
+            {showClienteResults && clienteResults.length > 0 && (
               <ul className="search-results">
                 {clienteResults.map((cliente) => (
                   <li
                     key={cliente.id}
                     onClick={() => {
                       setSelectedCliente(cliente);
-                      setClienteResults([]);
                       setClienteQuery(cliente.nome);
+                      setShowClienteResults(false);
                     }}
                   >
                     {cliente.nome} - CPF: {cliente.cpf}
@@ -125,24 +153,26 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
 
         <div className="form-section">
           <h2>2. Selecione o Livro</h2>
-          <div className="input-group">
+          <div className="input-group" ref={livroSearchRef}>
             <input
               id="livro-search"
               type="text"
               value={livroQuery}
               onChange={(e) => setLivroQuery(e.target.value)}
+              onFocus={() => setShowLivroResults(true)}
               placeholder="Comece a digitar o título do livro..."
               disabled={!!selectedLivro}
+              autoComplete="off"
             />
-            {livroResults.length > 0 && (
+            {showLivroResults && livroResults.length > 0 && (
               <ul className="search-results">
                 {livroResults.map((livro) => (
                   <li
                     key={livro.id}
                     onClick={() => {
                       setSelectedLivro(livro);
-                      setLivroResults([]);
                       setLivroQuery(livro.titulo);
+                      setShowLivroResults(false);
                     }}
                   >
                     {livro.titulo} ({livro.quantDisponivel} disponíveis)

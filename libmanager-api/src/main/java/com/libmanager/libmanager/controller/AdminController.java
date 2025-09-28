@@ -8,6 +8,8 @@ import com.libmanager.libmanager.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.libmanager.libmanager.dto.AdminPasswordDTO;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -37,8 +39,20 @@ public class AdminController {
     }
 
     @PutMapping("/usuarios/{id}")
-    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
-        Usuario usuarioAtualizado = adminService.atualizarUsuario(id, usuarioDTO);
+    public ResponseEntity<UsuarioDetalhesDTO> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDetalhesDTO usuarioAtualizado = adminService.atualizarUsuario(id, usuarioDTO);
         return ResponseEntity.ok(usuarioAtualizado);
+    }
+
+    @DeleteMapping("/usuarios/{id}")
+    public ResponseEntity<?> deletarUsuario(@PathVariable Long id, @RequestBody AdminPasswordDTO adminPasswordDTO) {
+        try {
+            adminService.deletarUsuario(id, adminPasswordDTO.getSenha());
+            // Retorna 200 OK sem corpo em caso de sucesso
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            // Retorna 400 Bad Request com a mensagem de erro
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

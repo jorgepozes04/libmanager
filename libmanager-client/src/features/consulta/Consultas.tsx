@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   searchClientes,
@@ -8,7 +8,7 @@ import {
   type Livro,
   type Revista,
 } from "../../services/apiService";
-import "./Consultas.css"; // Usaremos o mesmo arquivo CSS, mas com novo conteúdo
+import "./Consultas.css";
 import Page from "../../components/common/Page";
 
 type Categoria = "clientes" | "livros" | "revistas";
@@ -20,11 +20,11 @@ function Consultas() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
+  const [isFocused, setIsFocused] = useState(false);
 
-  // Efeito para buscar dados dinamicamente
-  useEffect(() => {
-    // Se não houver termo de busca, limpa os resultados
-    if (!termoBusca.trim()) {
+  const performSearch = useCallback(async () => {
+    // A busca só acontece se o campo estiver focado ou se houver um termo de busca
+    if (!isFocused && !termoBusca.trim()) {
       setResutados([]);
       setLoading(false);
       return;
@@ -32,29 +32,30 @@ function Consultas() {
 
     setLoading(true);
     setErro("");
-
-    // Debounce: Atraso para evitar buscas a cada tecla digitada
-    const timer = setTimeout(async () => {
-      try {
-        let data;
-        if (categoriaAtiva === "clientes") {
-          data = await searchClientes(termoBusca);
-        } else if (categoriaAtiva === "livros") {
-          data = await searchLivros(termoBusca); // O backend já busca por título ou autor
-        } else {
-          data = await searchRevistas(termoBusca);
-        }
-        setResutados(data);
-      } catch (error: any) {
-        setErro(error.message || "Erro ao realizar a busca.");
-        setResutados([]);
-      } finally {
-        setLoading(false);
+    try {
+      let data;
+      if (categoriaAtiva === "clientes") {
+        data = await searchClientes(termoBusca);
+      } else if (categoriaAtiva === "livros") {
+        data = await searchLivros(termoBusca);
+      } else {
+        data = await searchRevistas(termoBusca);
       }
-    }, 500); // A busca é acionada 500ms após o usuário parar de digitar
+      setResutados(data);
+    } catch (error: any) {
+      setErro(error.message || "Erro ao realizar a busca.");
+      setResutados([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [termoBusca, categoriaAtiva, isFocused]);
 
-    return () => clearTimeout(timer); // Limpa o timer se o usuário continuar digitando
-  }, [termoBusca, categoriaAtiva]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      performSearch();
+    }, 300); // Um pequeno debounce
+    return () => clearTimeout(timer);
+  }, [performSearch]);
 
   const handleRowClick = (id: number) => {
     navigate(`/${categoriaAtiva}/${id}`);
@@ -76,8 +77,17 @@ function Consultas() {
   const renderResultados = () => {
     if (loading) return <p className="feedback-text">Buscando...</p>;
     if (erro) return <p className="mensagem-erro">{erro}</p>;
-    if (termoBusca.trim() && resultados.length === 0) {
+    if (
+      (isFocused || termoBusca.trim()) &&
+      !loading &&
+      resultados.length === 0
+    ) {
       return <p className="feedback-text">Nenhum resultado encontrado.</p>;
+    }
+    if (!isFocused && !termoBusca.trim()) {
+      return (
+        <p className="feedback-text">Clique na barra e comece a buscar.</p>
+      );
     }
 
     return (
@@ -163,8 +173,11 @@ function Consultas() {
             type="text"
             value={termoBusca}
             onChange={(e) => setTermoBusca(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             placeholder={getPlaceholderText()}
             className="search-input"
+            autoComplete="off"
           />
         </div>
 

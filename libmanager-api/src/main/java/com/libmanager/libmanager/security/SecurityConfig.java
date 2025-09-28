@@ -1,4 +1,3 @@
-// Código completo do SecurityConfig atualizado
 package com.libmanager.libmanager.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +28,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        // Permite requisições OPTIONS do navegador (para CORS)
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        // Permite acesso público apenas ao endpoint de login
+                        // Permite acesso público aos endpoints de login e setup
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        // Apenas quem tem o cargo ADMIN pode acessar os endpoints de admin
+                        .requestMatchers(HttpMethod.GET, "/api/auth/needs-setup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/setup").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        // Qualquer outra requisição exige apenas que o usuário esteja autenticado
                         .anyRequest().authenticated()
                 )
-                // Adiciona nosso filtro para rodar antes do filtro padrão do Spring
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

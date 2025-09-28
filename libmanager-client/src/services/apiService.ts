@@ -123,6 +123,14 @@ export interface UsuarioDetalhes {
   endereco: Endereco;
 }
 
+export interface AdminPasswordRequest {
+  senha: string;
+}
+
+export interface SetupRequest {
+  password: string;
+}
+
 // --- Funções da API ---
 
 export const realizarEmprestimo = async (data: EmprestimoRequest) => {
@@ -319,7 +327,6 @@ export const updateRevista = async (id: number, data: RevistaRequest) => {
   return response.data;
 };
 
-// Função MODIFICADA para retornar o tipo de detalhe correto
 export const getUsuarioById = async (id: number): Promise<UsuarioDetalhes> => {
   const response = await axios.get(`${API_URL}/admin/usuarios/${id}`);
   return response.data;
@@ -328,4 +335,54 @@ export const getUsuarioById = async (id: number): Promise<UsuarioDetalhes> => {
 export const updateUsuario = async (id: number, data: UsuarioRequest) => {
   const response = await axios.put(`${API_URL}/admin/usuarios/${id}`, data);
   return response.data;
+};
+
+export const deleteUsuario = async (id: number, data: AdminPasswordRequest) => {
+  try {
+    const response = await axios.delete(`${API_URL}/admin/usuarios/${id}`, {
+      data: data,
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data || "Falha ao remover usuário.");
+    }
+    throw new Error("Falha na comunicação com o servidor.");
+  }
+};
+
+export const deleteCliente = async (id: number) => {
+  try {
+    await axios.delete(`${API_URL}/clientes/${id}`);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data || "Falha ao excluir cliente.");
+    }
+    throw new Error("Falha na comunicação com o servidor.");
+  }
+};
+
+export const needsSetup = async (): Promise<boolean> => {
+  try {
+    const response = await axios.get(`${API_URL}/auth/needs-setup`);
+    return response.data.needsSetup;
+  } catch (error) {
+    console.error("Falha ao verificar a necessidade de configuração:", error);
+    // Em caso de falha, assume que não precisa de setup para não bloquear o login
+    return false;
+  }
+};
+
+export const setupAdmin = async (data: SetupRequest) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/setup`, data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(
+        error.response.data.message || "Falha ao configurar admin."
+      );
+    }
+    throw new Error("Falha na comunicação com o servidor.");
+  }
 };
