@@ -21,30 +21,29 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @GetMapping("/usuarios")
+    @GetMapping("/usuarios")  // Chamada para listar usuários
     public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios() {
         return ResponseEntity.ok(adminService.listarTodosUsuarios());
     }
 
-    @PostMapping("/usuarios")
-    public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+    @PostMapping("/usuarios") // Chamada para criar usuários
+    public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioDTO usuarioDTO) { 
         Usuario novoUsuario = adminService.criarUsuario(usuarioDTO);
         return ResponseEntity.status(201).body(novoUsuario);
     }
 
-    // CORREÇÃO: O tipo de retorno agora corresponde ao que o serviço fornece.
-    @GetMapping("/usuarios/{id}")
-    public ResponseEntity<UsuarioDetalhesDTO> getUsuarioById(@PathVariable Long id) {
+    @GetMapping("/usuarios/{id}") // Chamada para buscar usuário por ID
+    public ResponseEntity<UsuarioDetalhesDTO> getUsuarioById(@PathVariable Long id) { 
         return ResponseEntity.ok(adminService.findUsuarioById(id));
     }
 
-    @PutMapping("/usuarios/{id}")
+    @PutMapping("/usuarios/{id}") // Chamada para atualizar usuário
     public ResponseEntity<UsuarioDetalhesDTO> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         UsuarioDetalhesDTO usuarioAtualizado = adminService.atualizarUsuario(id, usuarioDTO);
         return ResponseEntity.ok(usuarioAtualizado);
     }
 
-    @DeleteMapping("/usuarios/{id}")
+    @DeleteMapping("/usuarios/{id}") // Chamada para deletar usuário
     public ResponseEntity<?> deletarUsuario(@PathVariable Long id, @RequestBody AdminPasswordDTO adminPasswordDTO) {
         try {
             adminService.deletarUsuario(id, adminPasswordDTO.getSenha());

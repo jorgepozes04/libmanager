@@ -14,24 +14,24 @@ public class ClienteController {
 
     private final ClienteService clienteService;
 
-    @Autowired
+    @Autowired // Injeção de dependência do ClienteService
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
     }
 
-    @PostMapping
+    @PostMapping // Chamada para cadastrar cliente
     public ResponseEntity<Cliente> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
         Cliente novoCliente = clienteService.cadastrarCliente(clienteDTO);
         return ResponseEntity.status(201).body(novoCliente);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // Chamada para atualizar cliente
     public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
         Cliente clienteAtualizado = clienteService.atualizarCliente(id, clienteDTO);
         return ResponseEntity.ok(clienteAtualizado);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // Chamada para deletar cliente
     public ResponseEntity<?> deletarCliente(@PathVariable Long id) {
         try {
             clienteService.deletarCliente(id);

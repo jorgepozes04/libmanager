@@ -19,7 +19,7 @@ public class AutenticacaoController {
 
     private final AutenticacaoService autenticacaoService;
 
-    @PostMapping("/login")
+    @PostMapping("/login") // Chamada para tentativa de login
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
             LoginResponseDTO response = autenticacaoService.login(loginRequest);
@@ -29,13 +29,13 @@ public class AutenticacaoController {
         }
     }
 
-    @GetMapping("/needs-setup")
+    @GetMapping("/needs-setup") // Chamada para verificar necessidade de criação de usuário administrador
     public ResponseEntity<Map<String, Boolean>> needsSetup() {
         boolean needsSetup = autenticacaoService.needsSetup();
         return ResponseEntity.ok(Collections.singletonMap("needsSetup", needsSetup));
     }
 
-    @PostMapping("/setup")
+    @PostMapping("/setup") // Chamada para criação do usuário administrador
     public ResponseEntity<?> setupAdmin(@RequestBody SetupRequestDTO setupRequest) {
         try {
             autenticacaoService.setupAdmin(setupRequest);
