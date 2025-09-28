@@ -6,6 +6,7 @@ import com.libmanager.libmanager.domain.repository.ClienteRepository;
 import com.libmanager.libmanager.domain.repository.EmprestimoRepository;
 import com.libmanager.libmanager.domain.repository.LivroRepository;
 import com.libmanager.libmanager.domain.repository.UsuarioRepository;
+import com.libmanager.libmanager.service.strategy.Multa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.libmanager.libmanager.dto.EmprestimoRequestDTO;
@@ -16,29 +17,31 @@ import com.libmanager.libmanager.domain.model.Livro;
 import com.libmanager.libmanager.domain.model.Usuario;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
 public class EmprestimoService {
-    
+
     private final EmprestimoRepository emprestimoRepository;
     private final ClienteRepository clienteRepository;
     private final LivroRepository livroRepository;
     private final UsuarioRepository usuarioRepository;
+    private final Multa multa;
 
     @Autowired
     public EmprestimoService(EmprestimoRepository emprestimoRepository,
                              ClienteRepository clienteRepository,
                              LivroRepository livroRepository,
-                             UsuarioRepository usuarioRepository) {
+                             UsuarioRepository usuarioRepository,
+                             Multa multa) {
         this.emprestimoRepository = emprestimoRepository;
         this.clienteRepository = clienteRepository;
         this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
+        this.multa = multa;
     }
 
-    @Transactional // Garante que a operação seja atômica (ou tudo funciona, ou nada é salvo)
+    @Transactional
     public Emprestimo realizarEmprestimo(EmprestimoRequestDTO request) {
 
         Cliente cliente = clienteRepository.findById(request.getIdCliente())
@@ -50,7 +53,6 @@ public class EmprestimoService {
         Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
 
-        // Aplica as regras de negócio e pré-condições
         if (cliente.getStatus() != StatusMembro.ATIVO) {
             throw new RuntimeException("Cliente não está ativo!");
         }
@@ -70,24 +72,21 @@ public class EmprestimoService {
             throw new RuntimeException("Cliente já possui um empréstimo ativo!");
         }
 
-
-        // Atualiza o estado das entidades
         livro.setQuantDisponivel(livro.getQuantDisponivel() - 1);
         cliente.setLivroEmprestado(true);
 
-        // Cria a nova entidade Emprestimo
         Emprestimo novoEmprestimo = new Emprestimo();
         novoEmprestimo.setCliente(cliente);
         novoEmprestimo.setLivro(livro);
         novoEmprestimo.setUsuario(usuario);
         novoEmprestimo.setDataEmprestimo(LocalDate.now());
-        novoEmprestimo.setDataDevolucaoPrevista(LocalDate.now().plusDays(7)); // Prazo de 7 dias
+        novoEmprestimo.setDataDevolucaoPrevista(LocalDate.now().plusDays(7));
         novoEmprestimo.setStatus(StatusEmprestimo.ATIVO);
 
-        // Salva o novo empréstimo no banco. A transação também salva as alterações em Livro e Cliente.
         return emprestimoRepository.save(novoEmprestimo);
     }
 
+    @Transactional
     public DevolucaoResponseDTO realizarDevolucao(Long emprestimoId){
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
                 .orElseThrow(() -> new RuntimeException("Empréstimo com ID " + emprestimoId + " não encontrado."));
@@ -98,27 +97,25 @@ public class EmprestimoService {
         Livro livro = emprestimo.getLivro();
         Cliente cliente = emprestimo.getCliente();
         LocalDate dataDevolucao = LocalDate.now();
-        double multa = 0;
 
-        if (dataDevolucao.isAfter(emprestimo.getDataDevolucaoPrevista())) {
-            long diasAtraso = ChronoUnit.DAYS.between(emprestimo.getDataDevolucaoPrevista(), dataDevolucao);
-            double taxaDiaria = 2.50; // A taxa pode ser externalizada para um arquivo de configuração
-            multa = diasAtraso * taxaDiaria;
+        double totalMulta = multa.calcular(emprestimo, dataDevolucao);
+
+        if (totalMulta > 0) {
             emprestimo.setStatus(StatusEmprestimo.FINALIZADO_COM_ATRASO);
         } else {
             emprestimo.setStatus(StatusEmprestimo.FINALIZADO);
         }
 
         emprestimo.setDataDevolucaoRealizada(dataDevolucao);
-        emprestimo.setMultaValor(multa);
+        emprestimo.setMultaValor(totalMulta);
 
         livro.setQuantDisponivel(livro.getQuantDisponivel() + 1);
         cliente.setLivroEmprestado(false);
 
         emprestimoRepository.save(emprestimo);
 
-        String mensagem = (multa > 0) ? "Devolução realizada com atraso." : "Devolução realizada no prazo.";
-        return new DevolucaoResponseDTO(mensagem, emprestimo.getId(), emprestimo.getStatus(), multa);
+        String mensagem = (totalMulta > 0) ? "Devolução realizada com atraso." : "Devolução realizada no prazo.";
+        return new DevolucaoResponseDTO(mensagem, emprestimo.getId(), emprestimo.getStatus(), totalMulta);
     }
 
     public Optional<Emprestimo> buscarEmprestimoAtivoPorCliente(Long clienteId) {

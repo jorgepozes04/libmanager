@@ -96,7 +96,6 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
         <div className="form-section">
           <h2>1. Selecione o Cliente</h2>
           <div className="input-group">
-            <label htmlFor="cliente-search">Buscar Cliente por Nome</label>
             <input
               id="cliente-search"
               type="text"
@@ -127,7 +126,6 @@ function RealizarEmprestimo({ usuarioId }: EmprestimoProps) {
         <div className="form-section">
           <h2>2. Selecione o Livro</h2>
           <div className="input-group">
-            <label htmlFor="livro-search">Buscar Livro por Título</label>
             <input
               id="livro-search"
               type="text"

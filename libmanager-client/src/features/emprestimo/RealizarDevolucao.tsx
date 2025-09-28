@@ -85,7 +85,6 @@ function RealizarDevolucao() {
       <div className="form-section">
         <h2>1. Busque o Cliente</h2>
         <div className="input-group">
-          <label htmlFor="clienteQuery">Buscar por Nome</label>
           <input
             type="text"
             id="clienteQuery"

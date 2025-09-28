@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Define a URL base da nossa API Spring Boot
 const API_URL = "http://localhost:8080/api";
 
 axios.interceptors.request.use(
@@ -16,16 +15,12 @@ axios.interceptors.request.use(
   }
 );
 
-// --- Interfaces ---
-
-// Para realizar empréstimo
 export interface EmprestimoRequest {
   idLivro: number;
   idCliente: number;
   idUsuario: number;
 }
 
-// Para realizar login
 export interface LoginRequest {
   username?: string;
   password?: string;
@@ -73,7 +68,7 @@ export interface Cliente {
   id: number;
   nome: string;
   cpf: string;
-  endereco: Endereco; // Adicionar esta linha
+  endereco: Endereco;
 }
 
 export interface RevistaRequest {
@@ -106,16 +101,14 @@ export interface Usuario {
   status: string;
 }
 
-// Usado para criar um novo usuário
 export interface UsuarioRequest {
   nome: string;
   cpf: string;
   nomeUsuario: string;
-  senha?: string; // Senha é opcional aqui, mas requerida no form
+  senha?: string;
   endereco: Endereco;
 }
 
-// Função para realizar o empréstimo
 export const realizarEmprestimo = async (data: EmprestimoRequest) => {
   try {
     const response = await axios.post(`${API_URL}/emprestimos`, data);
@@ -127,16 +120,12 @@ export const realizarEmprestimo = async (data: EmprestimoRequest) => {
 
 export const login = async (data: LoginRequest) => {
   try {
-    // Envia a requisição POST para o endpoint de autenticação
     const response = await axios.post(`${API_URL}/auth/login`, data);
-    return response.data; // Retorna os dados da resposta (ex: { mensagem, nomeUsuario })
+    return response.data;
   } catch (error) {
-    // Lança o erro para ser tratado no componente de Login
     if (axios.isAxiosError(error) && error.response) {
-      // Se o backend retornou uma mensagem de erro (ex: "Usuário ou senha inválidos.")
       throw new Error(error.response.data || "Erro desconhecido no login.");
     }
-    // Se foi um erro de rede ou outro problema
     throw new Error("Falha na comunicação com o servidor.");
   }
 };
@@ -165,11 +154,10 @@ export const searchLivros = async (titulo: string) => {
 
 export const cadastrarCliente = async (data: ClienteRequest) => {
   try {
-    const response = await axios.post(`${API_URL}/cadastros/clientes`, data);
+    const response = await axios.post(`${API_URL}/clientes`, data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      // Repassa a mensagem de erro do backend (ex: "CPF já cadastrado")
       throw new Error(
         error.response.data.message || "Falha ao cadastrar cliente."
       );
@@ -180,7 +168,7 @@ export const cadastrarCliente = async (data: ClienteRequest) => {
 
 export const cadastrarLivro = async (data: LivroRequest) => {
   try {
-    const response = await axios.post(`${API_URL}/cadastros/livros`, data);
+    const response = await axios.post(`${API_URL}/publicacoes/livros`, data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -205,7 +193,7 @@ export const searchRevistas = async (titulo: string) => {
 
 export const cadastrarRevista = async (data: RevistaRequest) => {
   try {
-    const response = await axios.post(`${API_URL}/cadastros/revistas`, data);
+    const response = await axios.post(`${API_URL}/publicacoes/revistas`, data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -231,7 +219,7 @@ export const buscarEmprestimoAtivo = async (
       error.response &&
       error.response.status === 404
     ) {
-      return null; // Retorna nulo se o cliente não tiver empréstimo ativo (404)
+      return null;
     }
     throw new Error("Falha ao buscar empréstimo.");
   }
@@ -241,14 +229,12 @@ export const realizarDevolucao = async (
   emprestimoId: number
 ): Promise<DevolucaoResponse> => {
   try {
-    // A requisição é POST, mas não precisa enviar um corpo (body)
     const response = await axios.post(
       `${API_URL}/emprestimos/${emprestimoId}/devolver`
     );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      // Repassa a mensagem de erro específica do backend
       throw new Error(error.response.data || "Falha ao processar devolução.");
     }
     throw new Error("Falha na comunicação com o servidor.");
@@ -264,12 +250,10 @@ export const listarUsuarios = async (): Promise<Usuario[]> => {
       if (error.response.status === 403) {
         throw new Error("Você não tem permissão para acessar este recurso.");
       }
-      // Você pode adicionar outros tratamentos de status aqui, se necessário
       throw new Error(
         error.response.data.message || "Falha ao buscar usuários."
       );
     }
-    // Erro de rede ou outro problema
     throw new Error("Falha na comunicação com o servidor.");
   }
 };
@@ -302,16 +286,16 @@ export const getRevistaById = async (id: number) => {
 };
 
 export const updateCliente = async (id: number, data: ClienteRequest) => {
-  const response = await axios.put(`${API_URL}/cadastros/clientes/${id}`, data);
+  const response = await axios.put(`${API_URL}/clientes/${id}`, data);
   return response.data;
 };
 
 export const updateLivro = async (id: number, data: LivroRequest) => {
-  const response = await axios.put(`${API_URL}/cadastros/livros/${id}`, data);
+  const response = await axios.put(`${API_URL}/publicacoes/livros/${id}`, data);
   return response.data;
 };
 
 export const updateRevista = async (id: number, data: RevistaRequest) => {
-  const response = await axios.put(`${API_URL}/cadastros/revistas/${id}`, data);
+  const response = await axios.put(`${API_URL}/publicacoes/revistas/${id}`, data);
   return response.data;
 };
