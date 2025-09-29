@@ -127,30 +127,30 @@ public class AdminService {
     }
 
     @Transactional
-public void deletarUsuario(Long idParaDeletar, String senhaAdmin) {
-    // Pega o usuário administrador que está logado
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public void deletarUsuario(Long idParaDeletar, String senhaAdmin) {
+        // Pega o usuário administrador que está logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    if (!(principal instanceof Usuario)) {
-        // Isso não deve acontecer se o filtro de segurança estiver funcionando
-        throw new RuntimeException("Não foi possível verificar o administrador autenticado.");
-    }
-    Usuario admin = (Usuario) principal;
+        if (!(principal instanceof Usuario)) {
+            // Isso não deve acontecer se o filtro de segurança estiver funcionando
+            throw new RuntimeException("Não foi possível verificar o administrador autenticado.");
+        }
+        Usuario admin = (Usuario) principal;
 
-    // Verifica se a senha do admin fornecida está correta
-    if (!passwordEncoder.matches(senhaAdmin, admin.getSenha())) {
-        throw new RuntimeException("Senha do administrador incorreta.");
-    }
+        // Verifica se a senha do admin fornecida está correta
+        if (!passwordEncoder.matches(senhaAdmin, admin.getSenha())) {
+            throw new RuntimeException("Senha do administrador incorreta.");
+        }
 
-    // Impede que o admin delete a própria conta
-    if (admin.getId().equals(idParaDeletar)) {
-        throw new RuntimeException("Não é possível remover o próprio usuário administrador.");
-    }
+        // Impede que o admin delete a própria conta
+        if (admin.getId().equals(idParaDeletar)) {
+            throw new RuntimeException("Não é possível remover o próprio usuário administrador.");
+        }
 
-    // Deleta o usuário pelo ID, se ele existir
-    if (!usuarioRepository.existsById(idParaDeletar)) {
-        throw new RuntimeException("Usuário a ser deletado não encontrado.");
+        // Deleta o usuário pelo ID, se ele existir
+        if (!usuarioRepository.existsById(idParaDeletar)) {
+            throw new RuntimeException("Usuário a ser deletado 'não encontrado.");
+        }
+        usuarioRepository.deleteById(idParaDeletar);
     }
-    usuarioRepository.deleteById(idParaDeletar);
-}
 }
