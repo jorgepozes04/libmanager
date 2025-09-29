@@ -6,7 +6,7 @@ import com.libmanager.libmanager.domain.repository.ClienteRepository;
 import com.libmanager.libmanager.domain.repository.EmprestimoRepository;
 import com.libmanager.libmanager.domain.repository.LivroRepository;
 import com.libmanager.libmanager.domain.repository.UsuarioRepository;
-import com.libmanager.libmanager.service.strategy.Multa;
+import com.libmanager.libmanager.service.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.libmanager.libmanager.dto.EmprestimoRequestDTO;
@@ -26,14 +26,14 @@ public class EmprestimoService {
     private final ClienteRepository clienteRepository;
     private final LivroRepository livroRepository;
     private final UsuarioRepository usuarioRepository;
-    private final Multa multa;
+    private final MultaPadrao multa;
 
     @Autowired
     public EmprestimoService(EmprestimoRepository emprestimoRepository,
                              ClienteRepository clienteRepository,
                              LivroRepository livroRepository,
                              UsuarioRepository usuarioRepository,
-                             Multa multa) {
+                             MultaPadrao multa) {
         this.emprestimoRepository = emprestimoRepository;
         this.clienteRepository = clienteRepository;
         this.livroRepository = livroRepository;
