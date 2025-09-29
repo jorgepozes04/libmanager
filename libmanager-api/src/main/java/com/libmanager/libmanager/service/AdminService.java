@@ -45,9 +45,11 @@ public class AdminService {
 
     @Transactional
     public Usuario criarUsuario(UsuarioDTO usuarioDTO) {
+        // Verifica unicidade do nome de usuário
         if (usuarioRepository.findByNomeUsuario(usuarioDTO.getNomeUsuario()).isPresent()) {
             throw new RuntimeException("Nome de usuário já existe.");
         }
+        // Verifica unicidade do cpf
         if (usuarioRepository.findByCpf(usuarioDTO.getCpf()).isPresent()) {
             throw new RuntimeException("Já existe um usuário com o CPF informado.");
         }
@@ -100,6 +102,7 @@ public class AdminService {
     return toUsuarioDetalhesDTO(usuarioSalvo);
 }
 
+    // Injetar informações no DTO
     private UsuarioDetalhesDTO toUsuarioDetalhesDTO(Usuario usuario) {
         UsuarioDetalhesDTO dto = new UsuarioDetalhesDTO();
         dto.setId(usuario.getId());

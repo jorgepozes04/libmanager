@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*") // Permite requisições de qualquer origem
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/emprestimos")
 public class EmprestimoController {
