@@ -54,32 +54,28 @@ public class EmprestimoService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
 
         if (cliente.getStatus() != StatusMembro.ATIVO) {
-            throw new RuntimeException("Cliente não está ativo!");
+            throw new RuntimeException("Cliente não está ativo e não pode realizar empréstimos.");
         }
 
-        if (cliente.isLivroEmprestado()) {
-            throw new RuntimeException("Cliente já possui um empréstimo ativo!");
+        boolean possuiEmprestimoAtivo = emprestimoRepository
+                .findByClienteIdAndStatus(cliente.getId(), StatusEmprestimo.ATIVO)
+                .isPresent();
+
+        if (possuiEmprestimoAtivo) {
+            throw new RuntimeException("Cliente já possui um empréstimo ativo pendente!");
         }
 
-        if (livro.getQuantDisponivel() <= 0) {
-            throw new RuntimeException("Livro sem exemplares disponíveis!");
+        int atualizou = livroRepository.decrementarEstoque(livro.getId());
+        if (atualizou == 0) {
+            throw new RuntimeException("Livro sem exemplares disponíveis no momento!");
         }
-
-        Optional<Emprestimo> emprestimoAtivo = emprestimoRepository
-                .findByClienteIdAndStatus(cliente.getId(), StatusEmprestimo.ATIVO);
-
-        if (emprestimoAtivo.isPresent()) {
-            throw new RuntimeException("Cliente já possui um empréstimo ativo!");
-        }
-
-        livro.setQuantDisponivel(livro.getQuantDisponivel() - 1);
-        cliente.setLivroEmprestado(true);
 
         Emprestimo novoEmprestimo = new Emprestimo();
         novoEmprestimo.setCliente(cliente);
         novoEmprestimo.setLivro(livro);
         novoEmprestimo.setUsuario(usuario);
         novoEmprestimo.setDataEmprestimo(LocalDate.now());
+
         novoEmprestimo.setDataDevolucaoPrevista(LocalDate.now().plusDays(7));
         novoEmprestimo.setStatus(StatusEmprestimo.ATIVO);
 

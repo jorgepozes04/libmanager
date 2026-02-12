@@ -1,0 +1,4 @@
+"env": {
+    "DB_PASSWORD": "libmanager123",
+    "JWT_SECRET": "minha-chave-secreta-super-segura-libmanager"
+}
