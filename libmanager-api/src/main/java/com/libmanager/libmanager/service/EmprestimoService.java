@@ -6,6 +6,8 @@ import com.libmanager.libmanager.domain.repository.ClienteRepository;
 import com.libmanager.libmanager.domain.repository.EmprestimoRepository;
 import com.libmanager.libmanager.domain.repository.LivroRepository;
 import com.libmanager.libmanager.domain.repository.UsuarioRepository;
+import com.libmanager.libmanager.exception.RecursoNaoEncontradoException;
+import com.libmanager.libmanager.exception.RegraNegocioException;
 import com.libmanager.libmanager.service.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,18 +45,19 @@ public class EmprestimoService {
 
     @Transactional
     public Emprestimo realizarEmprestimo(EmprestimoRequestDTO request) {
+        validarRequestEmprestimo(request);
 
         Cliente cliente = clienteRepository.findById(request.getIdCliente())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
 
         Livro livro = livroRepository.findById(request.getIdLivro())
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado!"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado."));
 
         Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
 
         if (cliente.getStatus() != StatusMembro.ATIVO) {
-            throw new RuntimeException("Cliente não está ativo e não pode realizar empréstimos.");
+            throw new RegraNegocioException("Cliente não está ativo e não pode realizar empréstimos.");
         }
 
         boolean possuiEmprestimoAtivo = emprestimoRepository
@@ -62,12 +65,12 @@ public class EmprestimoService {
                 .isPresent();
 
         if (possuiEmprestimoAtivo) {
-            throw new RuntimeException("Cliente já possui um empréstimo ativo pendente!");
+            throw new RegraNegocioException("Cliente já possui um empréstimo ativo pendente.");
         }
 
         int atualizou = livroRepository.decrementarEstoque(livro.getId());
         if (atualizou == 0) {
-            throw new RuntimeException("Livro sem exemplares disponíveis no momento!");
+            throw new RegraNegocioException("Livro sem exemplares disponíveis no momento.");
         }
 
         Emprestimo novoEmprestimo = new Emprestimo();
@@ -78,16 +81,21 @@ public class EmprestimoService {
 
         novoEmprestimo.setDataDevolucaoPrevista(LocalDate.now().plusDays(7));
         novoEmprestimo.setStatus(StatusEmprestimo.ATIVO);
+        cliente.setLivroEmprestado(true);
 
         return emprestimoRepository.save(novoEmprestimo);
     }
 
     @Transactional
     public DevolucaoResponseDTO realizarDevolucao(Long emprestimoId){
+        if (emprestimoId == null) {
+            throw new IllegalArgumentException("O ID do empréstimo é obrigatório.");
+        }
+
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
-                .orElseThrow(() -> new RuntimeException("Empréstimo com ID " + emprestimoId + " não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Empréstimo com ID " + emprestimoId + " não encontrado."));
         if (emprestimo.getStatus() != StatusEmprestimo.ATIVO) {
-            throw new RuntimeException("Este empréstimo não está ativo e não pode ser devolvido novamente.");
+            throw new RegraNegocioException("Este empréstimo não está ativo e não pode ser devolvido novamente.");
         }
 
         Livro livro = emprestimo.getLivro();
@@ -115,6 +123,24 @@ public class EmprestimoService {
     }
 
     public Optional<Emprestimo> buscarEmprestimoAtivoPorCliente(Long clienteId) {
+        if (clienteId == null) {
+            throw new IllegalArgumentException("O ID do cliente é obrigatório.");
+        }
         return emprestimoRepository.findByClienteIdAndStatus(clienteId, StatusEmprestimo.ATIVO);
+    }
+
+    private void validarRequestEmprestimo(EmprestimoRequestDTO request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Dados do empréstimo não informados.");
+        }
+        if (request.getIdLivro() == null) {
+            throw new IllegalArgumentException("O ID do livro é obrigatório.");
+        }
+        if (request.getIdCliente() == null) {
+            throw new IllegalArgumentException("O ID do cliente é obrigatório.");
+        }
+        if (request.getIdUsuario() == null) {
+            throw new IllegalArgumentException("O ID do usuário é obrigatório.");
+        }
     }
 }

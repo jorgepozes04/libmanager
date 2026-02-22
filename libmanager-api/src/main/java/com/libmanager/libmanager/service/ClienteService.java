@@ -7,6 +7,8 @@ import com.libmanager.libmanager.domain.model.Endereco;
 import com.libmanager.libmanager.domain.repository.ClienteRepository;
 import com.libmanager.libmanager.domain.repository.EmprestimoRepository;
 import com.libmanager.libmanager.dto.ClienteDTO;
+import com.libmanager.libmanager.exception.RecursoNaoEncontradoException;
+import com.libmanager.libmanager.exception.RegraNegocioException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,10 @@ public class ClienteService {
 
     @Transactional
     public Cliente cadastrarCliente(ClienteDTO clienteDTO) {
+        validarDadosCliente(clienteDTO);
+
         if (clienteRepository.findByCpf(clienteDTO.getCpf()).isPresent()) {
-            throw new RuntimeException("Já existe um cliente com o CPF informado.");
+            throw new RegraNegocioException("Já existe um cliente com o CPF informado.");
         }
 
         Endereco endereco = criarEndereco(clienteDTO);
@@ -38,7 +42,18 @@ public class ClienteService {
 
     @Transactional
     public Cliente atualizarCliente(Long id, ClienteDTO clienteDTO) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+        validarIdCliente(id);
+        validarDadosCliente(clienteDTO);
+
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
+
+        clienteRepository.findByCpf(clienteDTO.getCpf())
+                .filter(clienteComMesmoCpf -> !clienteComMesmoCpf.getId().equals(id))
+                .ifPresent(clienteComMesmoCpf -> {
+                    throw new RegraNegocioException("Já existe outro cliente com o CPF informado.");
+                });
+
         cliente.setNome(clienteDTO.getNome());
         cliente.setCpf(clienteDTO.getCpf());
 
@@ -56,14 +71,16 @@ public class ClienteService {
 
     @Transactional
     public void deletarCliente(Long id) {
+        validarIdCliente(id);
+
         // Verifica se o cliente a ser deletado existe
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
 
         // Verifica se o cliente possui algum empréstimo ativo
         boolean temEmprestimoAtivo = emprestimoRepository.findByClienteIdAndStatus(id, StatusEmprestimo.ATIVO).isPresent();
         if (temEmprestimoAtivo) {
-            throw new RuntimeException("Não é possível excluir um cliente que possui um empréstimo ativo.");
+            throw new RegraNegocioException("Não é possível excluir um cliente que possui um empréstimo ativo.");
         }
 
         // Se não houver empréstimos ativos, deleta o cliente
@@ -74,6 +91,30 @@ public class ClienteService {
         Endereco endereco = new Endereco();
         atualizarDadosEndereco(endereco, clienteDTO);
         return endereco;
+    }
+
+    private void validarIdCliente(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("O ID do cliente é obrigatório.");
+        }
+    }
+
+    private void validarDadosCliente(ClienteDTO clienteDTO) {
+        if (clienteDTO == null) {
+            throw new IllegalArgumentException("Dados do cliente não informados.");
+        }
+
+        if (clienteDTO.getNome() == null || clienteDTO.getNome().isBlank()) {
+            throw new IllegalArgumentException("O nome do cliente é obrigatório.");
+        }
+
+        if (clienteDTO.getCpf() == null || clienteDTO.getCpf().isBlank()) {
+            throw new IllegalArgumentException("O CPF do cliente é obrigatório.");
+        }
+
+        if (clienteDTO.getEndereco() == null) {
+            throw new IllegalArgumentException("O endereço do cliente é obrigatório.");
+        }
     }
 
     private void atualizarDadosEndereco(Endereco endereco, ClienteDTO clienteDTO) {

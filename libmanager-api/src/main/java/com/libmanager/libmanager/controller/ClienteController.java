@@ -4,6 +4,7 @@ import com.libmanager.libmanager.domain.model.Cliente;
 import com.libmanager.libmanager.dto.ClienteDTO;
 import com.libmanager.libmanager.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,30 +15,26 @@ public class ClienteController {
 
     private final ClienteService clienteService;
 
-    @Autowired // Injeção de dependência do ClienteService
+    @Autowired
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
     }
 
-    @PostMapping // Chamada para cadastrar cliente
+    @PostMapping
     public ResponseEntity<Cliente> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
         Cliente novoCliente = clienteService.cadastrarCliente(clienteDTO);
-        return ResponseEntity.status(201).body(novoCliente);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
     }
 
-    @PutMapping("/{id}") // Chamada para atualizar cliente
+    @PutMapping("/{id}")
     public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
         Cliente clienteAtualizado = clienteService.atualizarCliente(id, clienteDTO);
         return ResponseEntity.ok(clienteAtualizado);
     }
 
-    @DeleteMapping("/{id}") // Chamada para deletar cliente
-    public ResponseEntity<?> deletarCliente(@PathVariable Long id) {
-        try {
-            clienteService.deletarCliente(id);
-            return ResponseEntity.ok().build(); // Retorna 200 OK (sem corpo) em caso de sucesso
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage()); // Retorna 400 com a mensagem de erro
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarCliente(@PathVariable Long id) {
+        clienteService.deletarCliente(id);
+        return ResponseEntity.ok().build();
     }
 }
